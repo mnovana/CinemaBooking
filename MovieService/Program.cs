@@ -4,6 +4,7 @@ using MovieService.Models;
 using MovieService.Models.DTO.Mapping;
 using MovieService.Repositories;
 using MovieService.Repositories.Interfaces;
+using SharedLibrary.Config;
 using SharedLibrary.Middleware;
 
 namespace MovieService
@@ -12,6 +13,8 @@ namespace MovieService
     {
         public static void Main(string[] args)
         {
+            EnvSetup.EnsureEnvFileExists();
+            
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.

@@ -1,4 +1,4 @@
-﻿using MovieService.CustomValidation;
+﻿using SharedLibrary.CustomValidation;
 using System.ComponentModel.DataAnnotations;
 
 namespace MovieService.Models
@@ -16,7 +16,8 @@ namespace MovieService.Models
         [Range(1, 300)]
         public int Duration { get; set; }
         [Required]
-        [DateInRange]
+        [MinDate(1900,1,1)]
+        [MaxYearsAfterNow(5)]
         public DateTime ReleaseDate { get; set; }
 
         [Required]

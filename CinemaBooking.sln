@@ -5,7 +5,9 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieService", "MovieService\MovieService.csproj", "{C5606D0E-27FC-4A39-82DE-85E7A32EA9CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{DF136567-93A0-4A69-B3FD-852DCD68CA83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{DF136567-93A0-4A69-B3FD-852DCD68CA83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{E83FFE55-D645-4C70-AB25-A5B253A74C3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{DF136567-93A0-4A69-B3FD-852DCD68CA83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF136567-93A0-4A69-B3FD-852DCD68CA83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF136567-93A0-4A69-B3FD-852DCD68CA83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E83FFE55-D645-4C70-AB25-A5B253A74C3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E83FFE55-D645-4C70-AB25-A5B253A74C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E83FFE55-D645-4C70-AB25-A5B253A74C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E83FFE55-D645-4C70-AB25-A5B253A74C3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

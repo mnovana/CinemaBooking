@@ -81,16 +81,10 @@ namespace MovieService
             }
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
-
             app.UseHttpsRedirection();
-
             app.UseCors();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }

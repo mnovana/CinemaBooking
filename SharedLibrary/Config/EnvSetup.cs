@@ -15,7 +15,7 @@ namespace SharedLibrary.Config
         {
             if (!File.Exists(envFilePath))
             {
-                File.WriteAllText(envFilePath, $"JWT_SIGNING_KEY={Guid.NewGuid()}\nJWT_ISSUER=https://localhost:5001\nJWT_AUDIENCE=https://localhost:5002,https://localhost:5003,https://localhost:5004,https://localhost:5005");
+                File.WriteAllText(envFilePath, $"JWT_SIGNING_KEY={Guid.NewGuid()}\nJWT_ISSUER=https://localhost:5001\nJWT_AUDIENCE=https://localhost:5002");
             }
 
             Env.Load(envFilePath);

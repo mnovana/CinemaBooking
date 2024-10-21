@@ -46,17 +46,11 @@ namespace MovieService.Repositories
 
         public async Task<bool> UpdateAsync(Movie movie)
         {
-            bool exists = await _context.Movies.AnyAsync(m => m.Id == movie.Id);
-
-            if (!exists)
-            {
-                return false;
-            }
-
             _context.Entry(movie).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            
+            int rowsAffected = await _context.SaveChangesAsync();
 
-            return true;
+            return rowsAffected > 0;
         }
     }
 }

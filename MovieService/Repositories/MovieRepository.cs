@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieService.Models;
+using MovieService.Models.DTO;
 using MovieService.Repositories.Interfaces;
 
 namespace MovieService.Repositories
@@ -42,6 +43,14 @@ namespace MovieService.Repositories
                 .Include(m => m.Director)
                 .Include(m => m.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<IEnumerable<MovieTitleDTO>> GetTitlesByIdsAsync(List<int> ids)
+        {
+            return await _context.Movies
+                .Where(m => ids.Contains(m.Id))
+                .Select(m => new MovieTitleDTO { Id = m.Id, Title = m.Title })
+                .ToListAsync();
         }
 
         public async Task<bool> UpdateAsync(Movie movie)

@@ -47,6 +47,16 @@ namespace MovieService.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMovieTitlesByIds([FromQuery]List<int> ids)
+        {
+            return Ok(await _movieRepository.GetTitlesByIdsAsync(ids));
+
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMovies()
         {
             var movies = await _movieRepository.GetAllAsync();

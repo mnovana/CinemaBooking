@@ -45,7 +45,7 @@ namespace MovieService.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("titles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMovieTitlesByIds([FromQuery]List<int> ids)

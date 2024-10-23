@@ -15,7 +15,21 @@ namespace SharedLibrary.Config
         {
             if (!File.Exists(envFilePath))
             {
-                File.WriteAllText(envFilePath, $"JWT_SIGNING_KEY={Guid.NewGuid()}\nJWT_ISSUER=https://localhost:5001\nJWT_AUDIENCE=https://localhost:5002");
+                var jwtSigningKey = Guid.NewGuid();
+                var jwtIssuer = "https://localhost:5001";
+                var jwtAudience = "https://localhost:5002";
+                var userServiceUrl = "https://localhost:5001";
+                var movieServiceUrl = "https://localhost:5003";
+                var screeningServiceUrl = "https://localhost:5004";
+
+                var envContent = $"JWT_SIGNING_KEY={jwtSigningKey}\n" +
+                    $"JWT_ISSUER={jwtIssuer}\n" +
+                    $"JWT_AUDIENCE={jwtAudience}\n" +
+                    $"USER_SERVICE_URL={userServiceUrl}\n" +
+                    $"MOVIE_SERVICE_URL={movieServiceUrl}\n" +
+                    $"SCREENING_SERVICE_URL={screeningServiceUrl}";
+                
+                File.WriteAllText(envFilePath, envContent);
             }
 
             Env.Load(envFilePath);

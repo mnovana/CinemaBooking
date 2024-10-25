@@ -56,7 +56,6 @@ namespace MovieService.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMovies()
         {
             var movies = await _movieRepository.GetAllAsync();

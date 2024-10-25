@@ -68,17 +68,6 @@ namespace MovieService.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostMovie(Movie movie)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Movie object is invalid.");
-                return BadRequest(new ProblemDetails
-                {
-                    Status = 400,
-                    Title = "Invalid movie",
-                    Detail = "New movie could not be added to the database because the model state is not valid."
-                });
-            }
-
             await _movieRepository.AddAsync(movie);
 
             return CreatedAtAction(nameof(GetMovieById), new { id = movie.Id }, _mapper.Map<MovieDTO>(movie));
@@ -90,17 +79,6 @@ namespace MovieService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutMovie(int id, Movie movie)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Movie object is invalid.");
-                return BadRequest(new ProblemDetails
-                {
-                    Status = 400,
-                    Title = "Invalid movie",
-                    Detail = "The movie could not be updated because the model state is not valid."
-                });
-            }
-
             if (id != movie.Id)
             {
                 _logger.LogWarning("Parameter ID and movie ID do not match.");

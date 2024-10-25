@@ -45,6 +45,13 @@ namespace MovieService.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
+        public async Task<MovieTitleDurationDTO?> GetTitleDurationByIdAsync(int id)
+        {
+            return await _context.Movies
+                .Select(m => new MovieTitleDurationDTO { Id = m.Id, Title = m.Title, Duration = m.Duration })
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
         public async Task<IEnumerable<MovieTitleDTO>> GetTitlesByIdsAsync(List<int> ids)
         {
             return await _context.Movies

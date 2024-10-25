@@ -90,11 +90,7 @@ namespace MovieService.Controllers
                 });
             }
 
-            if (await _movieRepository.UpdateAsync(movie))
-            {
-                return Ok(_mapper.Map<MovieDTO>(movie));
-            }
-            else
+            if (!await _movieRepository.UpdateAsync(movie))
             {
                 _logger.LogWarning("Movie with ID={id} not found.", id);
                 return NotFound(new ProblemDetails
@@ -104,6 +100,8 @@ namespace MovieService.Controllers
                     Detail = $"The movie with ID={id} could not be updated because it was not found in the database."
                 });
             }
+
+            return Ok(_mapper.Map<MovieDTO>(movie));
         }
 
         [HttpDelete("{id}")]

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieService.Models;
-using MovieService.Models.DTO;
+using SharedLibrary.Models.DTO;
 using MovieService.Repositories.Interfaces;
 
 namespace MovieService.Repositories

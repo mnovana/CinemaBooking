@@ -1,4 +1,4 @@
-﻿namespace MovieService.Models.DTO
+﻿namespace SharedLibrary.Models.DTO
 {
     public class MovieTitleDurationDTO
     {

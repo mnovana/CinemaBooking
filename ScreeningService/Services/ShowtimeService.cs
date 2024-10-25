@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ScreeningService.Models;
 using ScreeningService.Models.DTO;
+using SharedLibrary.Models.DTO;
 using ScreeningService.Repositories.Interfaces;
 using ScreeningService.Services.Interfaces;
 

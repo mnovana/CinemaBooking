@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using MovieService.Models;
 using MovieService.Models.DTO;
+using SharedLibrary.Models.DTO;
 using MovieService.Repositories.Interfaces;
 
 namespace MovieService.Controllers

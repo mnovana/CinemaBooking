@@ -1,5 +1,5 @@
 ﻿using MovieService.Models;
-using MovieService.Models.DTO;
+using SharedLibrary.Models.DTO;
 
 namespace MovieService.Repositories.Interfaces
 {

@@ -38,6 +38,10 @@ namespace SharedLibrary.Middleware
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 }
             }
+            else if (ex.Message.Contains("Bad request", StringComparison.OrdinalIgnoreCase))
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            }
             else
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;

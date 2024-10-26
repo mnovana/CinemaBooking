@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SharedLibrary.Models.DTO;
 
 namespace ScreeningService.Models.DTO.Mapping
 {

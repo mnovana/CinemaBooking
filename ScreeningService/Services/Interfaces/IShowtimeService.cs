@@ -1,5 +1,5 @@
 ﻿using ScreeningService.Models;
-using ScreeningService.Models.DTO;
+using SharedLibrary.Models.DTO;
 
 namespace ScreeningService.Services.Interfaces
 {

@@ -68,9 +68,11 @@ namespace ScreeningService
 
             // Repositories
             builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
+            builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 
             // Services
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
+            builder.Services.AddScoped<ISeatService, SeatService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

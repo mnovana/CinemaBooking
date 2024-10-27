@@ -21,13 +21,15 @@ namespace SharedLibrary.Config
                 var userServiceUrl = "https://localhost:5001";
                 var movieServiceUrl = "https://localhost:5003";
                 var screeningServiceUrl = "https://localhost:5004";
+                var seatReservationServiceUrl = "https://localhost:5005";
 
                 var envContent = $"JWT_SIGNING_KEY={jwtSigningKey}\n" +
                     $"JWT_ISSUER={jwtIssuer}\n" +
                     $"JWT_AUDIENCE={jwtAudience}\n" +
                     $"USER_SERVICE_URL={userServiceUrl}\n" +
                     $"MOVIE_SERVICE_URL={movieServiceUrl}\n" +
-                    $"SCREENING_SERVICE_URL={screeningServiceUrl}";
+                    $"SCREENING_SERVICE_URL={screeningServiceUrl}" +
+                    $"SEATRESERVATION_SERVICE_URL={seatReservationServiceUrl}";
                 
                 File.WriteAllText(envFilePath, envContent);
             }

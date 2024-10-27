@@ -1,0 +1,99 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SeatReservationService.Models;
+using SeatReservationService.Models.DTO.Mapping;
+using SeatReservationService.Repositories;
+using SeatReservationService.Repositories.Interfaces;
+using SeatReservationService.Services;
+using SeatReservationService.Services.Interfaces;
+using SharedLibrary.Config;
+using SharedLibrary.Middleware;
+using System.Text;
+
+namespace SeatReservationService
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            EnvSetup.EnsureEnvFileExists();
+
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+
+            // Database for EF
+            string? connectionString = ConfigurationExtensions.GetConnectionString(builder.Configuration, "AppConnectionString");
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(connectionString));
+
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            // Authentication
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+            var audiences = Environment.GetEnvironmentVariable("JWT_AUDIENCE").Split(',');
+            var key = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = issuer,
+                        ValidAudiences = audiences,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    };
+                });
+
+            // CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
+            // AutoMapper
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            // Repositories
+            builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+
+            // Services
+            builder.Services.AddScoped<IReservationService, ReservationService>();
+
+            // IMiddleware
+            builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
+
+            // Http client
+            builder.Services.AddHttpClient();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+            app.UseHttpsRedirection();
+            app.UseCors();
+            app.UseAuthorization();
+            app.MapControllers();
+            app.Run();
+        }
+    }
+}

@@ -6,7 +6,8 @@ namespace ScreeningService.Services.Interfaces
     public interface IShowtimeService
     {
         Task<IEnumerable<ShowtimeDTO>> GetAllAsync();
-        Task<ShowtimeDTO?> GetById(int id); 
+        Task<ShowtimeDTO?> GetByIdAsync(int id);
+        Task<IEnumerable<ShowtimeDTO>> GetByIdsAsync(int[] ids);
         Task<ShowtimeDTO> AddAsync(Showtime showtime);
         Task<ShowtimeDTO?> UpdateAsync(Showtime showtime);
         Task<bool> DeleteAsync(int id);

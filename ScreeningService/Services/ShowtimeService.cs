@@ -94,7 +94,7 @@ namespace ScreeningService.Services
             return showtimesDto;
         }
 
-        public async Task<ShowtimeDTO?> GetById(int id)
+        public async Task<ShowtimeDTO?> GetByIdAsync(int id)
         {
             var showtime = await _showtimeRepository.GetByIdAsync(id);
 
@@ -115,6 +115,39 @@ namespace ScreeningService.Services
             showtimeDto.MovieTitle = movieTitles.First().Title;
 
             return showtimeDto;
+        }
+
+        public async Task<IEnumerable<ShowtimeDTO>> GetByIdsAsync(int[] ids)
+        {
+            // get showtimes and extract movie ids needed for a request
+            var showtimes = await _showtimeRepository.GetByIdsAsync(ids);
+            var movieIds = showtimes.Select(s => s.MovieId).Distinct();
+
+            var response = await _httpClient.GetAsync($"movies/titles?ids={string.Join(",", movieIds)}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch movie titles, status code {response.StatusCode}.");
+            }
+
+            var movieTitles = await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>();
+            var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
+
+            // set showtimes movie titles using a dictionary
+            var movieTitlesDict = movieTitles.ToDictionary(m => m.Id, m => m.Title);
+            foreach (var showtime in showtimesDto)
+            {
+                if (movieTitlesDict.TryGetValue(showtime.MovieId, out var title))
+                {
+                    showtime.MovieTitle = title;
+                }
+                else
+                {
+                    showtime.MovieTitle = "unknown";
+                }
+            }
+
+            return showtimesDto;
         }
 
         public async Task<ShowtimeDTO?> UpdateAsync(Showtime showtime)

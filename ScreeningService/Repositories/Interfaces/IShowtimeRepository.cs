@@ -6,6 +6,7 @@ namespace ScreeningService.Repositories.Interfaces
     {
         Task<IEnumerable<Showtime>> GetAllAsync();
         Task<Showtime?> GetByIdAsync(int id);
+        Task<IEnumerable<Showtime>> GetByIdsAsync(int[] ids);
         Task AddAsync(Showtime showtime);
         Task<bool> UpdateAsync(Showtime showtime);
         Task<bool> DeleteAsync(int id);

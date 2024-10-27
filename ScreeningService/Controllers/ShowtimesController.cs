@@ -24,7 +24,7 @@ namespace ScreeningService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetShowtimeById(int id)
         {
-            var showtime = await _showtimeService.GetById(id);
+            var showtime = await _showtimeService.GetByIdAsync(id);
 
             if (showtime == null)
             {
@@ -45,6 +45,21 @@ namespace ScreeningService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetShowtimes()
         {
+            var showtimes = await _showtimeService.GetAllAsync();
+
+            return Ok(showtimes);
+        }
+
+        [HttpGet("ByIds")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetShowtimesByIds(string ids)
+        {
+            int[] idsArray = ids
+                 .Split(',')
+                 .Select(stringId => int.Parse(stringId))
+                 .ToArray();
+
             var showtimes = await _showtimeService.GetAllAsync();
 
             return Ok(showtimes);

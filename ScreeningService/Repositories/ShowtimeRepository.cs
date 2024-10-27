@@ -54,6 +54,14 @@ namespace ScreeningService.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
+        public async Task<IEnumerable<Showtime>> GetByIdsAsync(int[] ids)
+        {
+            return await _context.Showtimes
+                .Include(s => s.ScreeningRoom)
+                .Where(s => ids.Contains(s.Id))
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Showtime>> GetByMovieId(int movieId)
         {
             return await _context.Showtimes

@@ -60,7 +60,7 @@ namespace ScreeningService.Controllers
                  .Select(stringId => int.Parse(stringId))
                  .ToArray();
 
-            var showtimes = await _showtimeService.GetAllAsync();
+            var showtimes = await _showtimeService.GetByIdsAsync(idsArray);
 
             return Ok(showtimes);
         }

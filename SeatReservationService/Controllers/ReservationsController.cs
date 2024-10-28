@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SeatReservationService.Models;
 using SeatReservationService.Services.Interfaces;
@@ -18,6 +18,7 @@ namespace SeatReservationService.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,6 +41,7 @@ namespace SeatReservationService.Controllers
             return Ok(reservation);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -50,6 +52,7 @@ namespace SeatReservationService.Controllers
             return Ok(reservations);
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -61,6 +64,7 @@ namespace SeatReservationService.Controllers
             return CreatedAtAction(nameof(GetReservationById), new { id = createdReservation.Id }, createdReservation);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -94,6 +98,7 @@ namespace SeatReservationService.Controllers
             return Ok(updatedReservation);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

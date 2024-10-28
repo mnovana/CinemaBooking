@@ -102,6 +102,7 @@ namespace SeatReservationService
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseCors();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

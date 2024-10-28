@@ -6,6 +6,7 @@ using SeatReservationService.Models.DTO;
 using SeatReservationService.Repositories.Interfaces;
 using SeatReservationService.Services.Interfaces;
 using SharedLibrary.Models.DTO;
+using System.Net.Http.Headers;
 
 namespace SeatReservationService.Services
 {
@@ -14,6 +15,8 @@ namespace SeatReservationService.Services
         private readonly IReservationRepository _reservationRepository;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string _token;
 
         public ReservationService(IReservationRepository reservationRepository, IHttpClientFactory httpClientFactory, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
@@ -152,7 +155,7 @@ namespace SeatReservationService.Services
 
         private async Task<ShowtimeDTO> GetShowtimeByIdAsync(int id)
         {
-            var client = _httpClientFactory.CreateClient("ScreeningService");
+            var client = GetClientWithToken("ScreeningService");
             var response = await client.GetAsync($"showtimes/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -165,7 +168,7 @@ namespace SeatReservationService.Services
 
         private async Task<List<ShowtimeDTO>> GetShowtimesByIdsAsync(int[] ids)
         {
-            var client = _httpClientFactory.CreateClient("ScreeningService");
+            var client = GetClientWithToken("ScreeningService");
             var response = await client.GetAsync($"showtimes/byids?ids={string.Join(',', ids)}");
 
             if (!response.IsSuccessStatusCode)
@@ -179,7 +182,7 @@ namespace SeatReservationService.Services
 
         private async Task<List<SeatDTO>> GetSeatsByIdsAsync(int[] ids, int sreeningRoomNumber)
         {
-            var client = _httpClientFactory.CreateClient("ScreeningService");
+            var client = GetClientWithToken("ScreeningService");
             var response = await client.GetAsync($"seats/checkroom?screeningroomnumber={sreeningRoomNumber}&ids={string.Join(",", ids)}");
 
             if (!response.IsSuccessStatusCode)
@@ -195,7 +198,7 @@ namespace SeatReservationService.Services
 
         private async Task<List<SeatDTO>> GetSeatsByIdsAsync(int[] ids)
         {
-            var client = _httpClientFactory.CreateClient("ScreeningService");
+            var client = GetClientWithToken("ScreeningService");
             var response = await client.GetAsync($"seats/byids?ids={string.Join(",", ids)}");
 
             if (!response.IsSuccessStatusCode)
@@ -207,6 +210,15 @@ namespace SeatReservationService.Services
             var seats = await response.Content.ReadFromJsonAsync<List<SeatDTO>>();
 
             return seats;
+        }
+
+
+        private HttpClient GetClientWithToken(string clientName)
+        {
+            var client = _httpClientFactory.CreateClient(clientName);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            return client;
         }
     }
 }

@@ -76,8 +76,19 @@ namespace SeatReservationService
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
 
-            // Http client
-            builder.Services.AddHttpClient();
+            // Http clients
+            builder.Services.AddHttpClient("ScreeningService", client =>
+            {
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SCREENING_SERVICE_URL"));
+            });
+
+            builder.Services.AddHttpClient("UserService", client =>
+            {
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("USER_SERVICE_URL"));
+            });
+
+            // Http context accessor
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 

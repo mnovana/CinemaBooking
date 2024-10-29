@@ -4,7 +4,7 @@ using MovieService.Repositories.Interfaces;
 
 namespace MovieService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class DirectorsController : ControllerBase
     {

@@ -6,6 +6,7 @@ using SeatReservationService.Models.DTO;
 using SeatReservationService.Repositories.Interfaces;
 using SeatReservationService.Services.Interfaces;
 using SharedLibrary.Models.DTO;
+using System.Security.Claims;
 using System.Net.Http.Headers;
 
 namespace SeatReservationService.Services
@@ -23,17 +24,48 @@ namespace SeatReservationService.Services
             _reservationRepository = reservationRepository;
             _httpClientFactory = httpClientFactory;
             _mapper = mapper;
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SCREENING_SERVICE_URL"));
+            _httpContextAccessor = httpContextAccessor;
+
+            _token = _httpContextAccessor.HttpContext.Request.Headers["Authorization"]
+                .ToString()
+                .Replace("Bearer ", "");
         }
 
         public async Task<ReservationDTO> AddAsync(Reservation reservation)
         {
-            // first check if showtime and seats exist
+            // get showtime if existent
             var showtime = await GetShowtimeByIdAsync(reservation.ShowtimeId);
 
+            // get seats if existent and available
             var seatIds = reservation.ReservedSeats.Select(rs => rs.SeatId).ToArray();
             var seats = await GetSeatsByIdsAsync(seatIds, showtime.ScreeningRoomNumber);
+
+            // extract role from jwt token, if it's:
+            // admin - check if email exists in UserService
+            // user - set reservation email to that user's email
+            var roles = _httpContextAccessor.HttpContext.User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            if(roles.Contains("Admin"))
+            {
+                if (!await EmailExistsAsync(reservation.UserEmail))
+                {
+                    throw new Exception($"Bad request, email '{reservation.UserEmail}' does not exist in the database.");
+                }
+            }
+            else if(roles.Contains("User"))
+            {
+                reservation.UserEmail = _httpContextAccessor.HttpContext.User.Claims
+                    .Where(c => c.Type == ClaimTypes.Email)
+                    .Select(c => c.Value)
+                    .Single();
+            }
+            else
+            {
+                throw new Exception("Bad request, invalid user role.");
+            }
 
             // add
             await _reservationRepository.AddAsync(reservation);
@@ -212,6 +244,23 @@ namespace SeatReservationService.Services
             return seats;
         }
 
+        private async Task<bool> EmailExistsAsync(string email)
+        {
+            var client = GetClientWithToken("UserService");
+            var response = await client.GetAsync($"users/email?email={email}");
+
+            if((int)response.StatusCode == 404)
+            {
+                return false;
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Tried to check if email '{email}' exists, status code {response.StatusCode}.");
+            }
+
+            return true;
+        }
 
         private HttpClient GetClientWithToken(string clientName)
         {

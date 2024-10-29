@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UserService.Models.DTO;
 using UserService.Services;
 
 namespace UserService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -55,6 +56,30 @@ namespace UserService.Controllers
             }
 
             return Ok(token);
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpGet("email")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> EmailExists([FromQuery] string email)
+        {
+            var exists = await _authService.EmailExistsAsync(email);
+
+            if (!exists)
+            {
+                _logger.LogWarning("User email '{email}' not found.", email);
+                return NotFound(new ProblemDetails
+                {
+                    Status = 404,
+                    Title = "User email not found",
+                    Detail = $"The user email '{email}' was not found in the database."
+                });
+            }
+
+            return Ok();
         }
     }
 }

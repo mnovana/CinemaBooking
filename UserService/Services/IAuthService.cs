@@ -7,5 +7,6 @@ namespace UserService.Services
     {
         public Task<IdentityResult> RegisterAsync(RegisterDTO model);
         public Task<TokenDTO?> LoginAsync(LoginDTO model);
+        public Task<bool> EmailExistsAsync(string email);
     }
 }

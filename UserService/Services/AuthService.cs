@@ -130,5 +130,10 @@ namespace UserService.Services
 
             return IdentityResult.Success;
         }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
+        }
     }
 }

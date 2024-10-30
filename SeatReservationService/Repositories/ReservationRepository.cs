@@ -42,6 +42,15 @@ namespace SeatReservationService.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        public async Task<IEnumerable<int>> GetTakenSeats(int showtimeId, int[] seatsIds)
+        {
+            return await _context.ReservedSeats
+                .Include(rs => rs.Reservation)
+                .Where(rs => rs.Reservation.ShowtimeId == showtimeId && seatsIds.Contains(rs.SeatId))
+                .Select(rs => rs.SeatId)
+                .ToArrayAsync();
+        }
+
         public async Task<bool> UpdateAsync(Reservation reservation)
         {
             _context.Entry(reservation).State = EntityState.Modified;

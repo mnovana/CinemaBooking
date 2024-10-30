@@ -38,6 +38,12 @@ namespace SeatReservationService.Services
 
             // get seats if existent and available
             var seatIds = reservation.ReservedSeats.Select(rs => rs.SeatId).ToArray();
+
+            var takenSeats = await _reservationRepository.GetTakenSeats(showtime.Id, seatIds);
+            if(takenSeats.Count() > 0)
+            {
+                throw new Exception($"Bad request, seats with these IDs are already reserved: {string.Join(',', takenSeats)}.");
+            }
             var seats = await GetSeatsByIdsAsync(seatIds, showtime.ScreeningRoomNumber);
 
             // extract role from jwt token, if it's:

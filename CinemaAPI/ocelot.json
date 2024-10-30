@@ -1,0 +1,207 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl":  "https://localhost:5002"
+  },
+  "Routes": [
+    // UserService
+    {
+      "UpstreamPathTemplate": "/gateway/users/login",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/users/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "SwaggerKey": "UserService"
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/users/register",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/users/register",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "SwaggerKey": "UserService"
+    },
+    // MovieService
+    {
+      "UpstreamPathTemplate": "/gateway/movies/{id}",
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ],
+      "DownstreamPathTemplate": "/movies/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "MovieService"
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/movies",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/movies",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "MovieService"
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/directors/{id}",
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ],
+      "DownstreamPathTemplate": "/directors/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "MovieService"
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/directors",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/directors",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "MovieService"
+    },
+    //ScreeningService
+    {
+      "UpstreamPathTemplate": "/gateway/showtimes/{id}",
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ],
+      "DownstreamPathTemplate": "/showtimes/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5004
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "ScreeningService"
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/showtimes",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/showtimes",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5004
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "ScreeningService"
+    },
+    // SeatReservationService
+    {
+      "UpstreamPathTemplate": "/gateway/reservations/{id}",
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ],
+      "DownstreamPathTemplate": "/reservations/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "SeatReservationService"
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/reservations",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/reservations",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "SeatReservationService"
+    }
+  ],
+  "SwaggerEndpoints": [
+    {
+      "Key": "UserService",
+      "Config": [
+        {
+          "Name": "UserService",
+          "Version": "v1",
+          "Url": "https://localhost:5001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "MovieService",
+      "Config": [
+        {
+          "Name": "MovieService",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "ScreeningService",
+      "Config": [
+        {
+          "Name": "ScreeningService",
+          "Version": "v1",
+          "Url": "https://localhost:5004/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "SeatReservationService",
+      "Config": [
+        {
+          "Name": "SeatReservationService",
+          "Version": "v1",
+          "Url": "https://localhost:5005/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

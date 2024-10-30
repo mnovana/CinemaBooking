@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService", "UserService\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningService", "ScreeningService\ScreeningService.csproj", "{237D280D-4B3D-4CF9-B53F-6149924E492A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatReservationService", "SeatReservationService\SeatReservationService.csproj", "{7B39680B-2629-4D2D-897E-0B7E9126FB3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeatReservationService", "SeatReservationService\SeatReservationService.csproj", "{7B39680B-2629-4D2D-897E-0B7E9126FB3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaAPI", "CinemaAPI\CinemaAPI.csproj", "{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{7B39680B-2629-4D2D-897E-0B7E9126FB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B39680B-2629-4D2D-897E-0B7E9126FB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B39680B-2629-4D2D-897E-0B7E9126FB3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

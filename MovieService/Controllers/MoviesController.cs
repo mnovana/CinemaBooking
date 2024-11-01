@@ -5,9 +5,11 @@ using MovieService.Models;
 using MovieService.Models.DTO;
 using SharedLibrary.Models.DTO;
 using MovieService.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieService.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
     public class MoviesController : ControllerBase
@@ -46,6 +48,7 @@ namespace MovieService.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpGet("titles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

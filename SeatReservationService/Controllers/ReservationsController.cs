@@ -5,6 +5,7 @@ using SeatReservationService.Services.Interfaces;
 
 namespace SeatReservationService.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
     public class ReservationsController : ControllerBase
@@ -18,7 +19,6 @@ namespace SeatReservationService.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,7 +41,6 @@ namespace SeatReservationService.Controllers
             return Ok(reservation);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -64,7 +63,6 @@ namespace SeatReservationService.Controllers
             return CreatedAtAction(nameof(GetReservationById), new { id = createdReservation.Id }, createdReservation);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,7 +96,6 @@ namespace SeatReservationService.Controllers
             return Ok(updatedReservation);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

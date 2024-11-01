@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScreeningService.Models;
 using ScreeningService.Services.Interfaces;
 
 namespace ScreeningService.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
     public class ShowtimesController : ControllerBase
@@ -18,6 +20,7 @@ namespace ScreeningService.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,6 +43,7 @@ namespace ScreeningService.Controllers
             return Ok(showtime);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

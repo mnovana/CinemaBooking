@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MovieService.Models;
 using MovieService.Repositories.Interfaces;
 
 namespace MovieService.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
     public class DirectorsController : ControllerBase
@@ -17,6 +19,7 @@ namespace MovieService.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

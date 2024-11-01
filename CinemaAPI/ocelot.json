@@ -45,6 +45,9 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
+      },
       "SwaggerKey": "MovieService"
     },
     {
@@ -60,6 +63,9 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
       },
       "SwaggerKey": "MovieService"
     },
@@ -77,6 +83,9 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
+      },
       "SwaggerKey": "MovieService"
     },
     {
@@ -92,6 +101,9 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
       },
       "SwaggerKey": "MovieService"
     },
@@ -110,6 +122,9 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
+      },
       "SwaggerKey": "ScreeningService"
     },
     {
@@ -123,6 +138,9 @@
           "Port": 5004
         }
       ],
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
+      },
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -143,6 +161,9 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
+      },
       "SwaggerKey": "SeatReservationService"
     },
     {
@@ -158,6 +179,9 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 3600
       },
       "SwaggerKey": "SeatReservationService"
     }

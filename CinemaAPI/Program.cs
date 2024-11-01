@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Cache.CacheManager;
 using SharedLibrary.Config;
 using System.Text;
 
@@ -19,9 +20,14 @@ namespace CinemaAPI
             builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
             // Add services to the container.
-            builder.Services.AddOcelot(builder.Configuration);
+
+            builder.Services.AddOcelot(builder.Configuration)
+                .AddCacheManager(x => x.WithDictionaryHandle());
+
             builder.Services.AddSwaggerForOcelot(builder.Configuration);
+
             builder.Services.AddControllers();
+
             // Authentication
             var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
             var audiences = Environment.GetEnvironmentVariable("JWT_AUDIENCE").Split(',');

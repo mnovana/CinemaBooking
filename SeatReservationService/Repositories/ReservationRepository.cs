@@ -53,6 +53,17 @@ namespace SeatReservationService.Repositories
 
         public async Task<bool> UpdateAsync(Reservation reservation)
         {
+            // delete existing ReservedSeat rows
+            await _context.ReservedSeats
+                .Where(rs => rs.ReservationId == reservation.Id)
+                .ExecuteDeleteAsync();
+
+            // add new ReservedSeat rows
+            foreach (var reservedSeat in reservation.ReservedSeats)
+            {
+                _context.ReservedSeats.Add(reservedSeat);
+            }
+
             _context.Entry(reservation).State = EntityState.Modified;
 
             int rowsAffected = await _context.SaveChangesAsync();

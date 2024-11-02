@@ -164,11 +164,24 @@ namespace SeatReservationService.Services
 
         public async Task<ReservationDTO?> UpdateAsync(Reservation reservation)
         {
-            // first check if showtime and seats exist
+            // get showtime if existent
             var showtime = await GetShowtimeByIdAsync(reservation.ShowtimeId);
 
+            // get seats if existent and available
             var seatIds = reservation.ReservedSeats.Select(rs => rs.SeatId).ToArray();
+
+            var takenSeats = await _reservationRepository.GetTakenSeats(showtime.Id, seatIds);
+            if (takenSeats.Count() > 0)
+            {
+                throw new Exception($"Bad request, seats with these IDs are already reserved: {string.Join(',', takenSeats)}.");
+            }
             var seats = await GetSeatsByIdsAsync(seatIds, showtime.ScreeningRoomNumber);
+
+            // check if email exists in UserService (no role checking since only admin can update)
+            if (!await EmailExistsAsync(reservation.UserEmail))
+            {
+                throw new Exception($"Bad request, email '{reservation.UserEmail}' does not exist in the database.");
+            }
 
             // update (false means ID not found)
             if (!await _reservationRepository.UpdateAsync(reservation))
@@ -176,19 +189,13 @@ namespace SeatReservationService.Services
                 return null;
             }
 
-            // fetch for referenced properties
-            ReservationDTO createdReservation = _mapper.Map<ReservationDTO>(await _reservationRepository.GetByIdAsync(reservation.Id));
+            // set referenced properties: showtime and reserved seats
+            reservation.Showtime = showtime;
+            reservation.ReservedSeats = seats
+                .Select(s => new ReservedSeat { Seat = s })
+                .ToList();
 
-            // set showtime and reserved seats
-            createdReservation.Showtime = showtime;
-            createdReservation.ReservedSeats = seats
-                .Select(s => new ReservedSeatDTO
-                {
-                    SeatNumber = s.Number,
-                    SeatRowNumber = s.RowNumber
-                }).ToList();
-
-            return createdReservation;
+            return _mapper.Map<ReservationDTO>(reservation);
         }
 
         private async Task<ShowtimeDTO> GetShowtimeByIdAsync(int id)

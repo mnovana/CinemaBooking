@@ -17,22 +17,16 @@ namespace ScreeningService.Services
         public ShowtimeService(IShowtimeRepository showtimeRepository, HttpClient httpClient, IMapper mapper)
         {
             _showtimeRepository = showtimeRepository;
-
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("MOVIE_SERVICE_URL"));
             _mapper = mapper;
+            _httpClient = httpClient;
+
+            _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("MOVIE_SERVICE_URL"));
         }
 
         public async Task<ShowtimeDTO> AddAsync(Showtime showtime)
-        {
-            var response = await _httpClient.GetAsync($"movies/titleduration/{showtime.MovieId}");
-
-            if(!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch movie title with ID={showtime.MovieId}, status code {response.StatusCode}.");
-            }
-            
-            var movieDto = await response.Content.ReadFromJsonAsync<MovieTitleDurationDTO>();
+        {   
+            // fetch title and duration from MovieService
+            var movieDto = await GetMovieTitleDuration(showtime.MovieId);
 
             // calculate end and check overlapping
             showtime.End = showtime.Start.AddMinutes(movieDto.Duration);
@@ -50,7 +44,7 @@ namespace ScreeningService.Services
             var addedShowtime = await _showtimeRepository.GetByIdAsync(showtime.Id);
             var showtimeDto = _mapper.Map<ShowtimeDTO>(addedShowtime);
 
-            // set missing data fetched from another db
+            // set missing data fetched earlier from another db
             showtimeDto.MovieTitle = movieDto.Title;
 
             return showtimeDto;
@@ -65,16 +59,11 @@ namespace ScreeningService.Services
         {
             // get showtimes and extract movie ids needed for a request
             var showtimes = await _showtimeRepository.GetAllAsync();
-            var movieIds = showtimes.Select(s => s.MovieId).Distinct();
+            var movieIds = showtimes.Select(s => s.MovieId).Distinct().ToArray();
 
-            var response = await _httpClient.GetAsync($"movies/titles?ids={string.Join(",", movieIds)}");
+            // fetch movie titles from MovieService
+            var movieTitles = await GetMovieTitlesByIds(movieIds);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch movie titles, status code {response.StatusCode}.");
-            }
-
-            var movieTitles = await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>();
             var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
 
             // set showtimes movie titles using a dictionary
@@ -103,16 +92,9 @@ namespace ScreeningService.Services
                 return null;
             }
 
-            var response = await _httpClient.GetAsync($"movies/titles?ids={showtime.MovieId}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch movie title with ID={showtime.MovieId}, status code {response.StatusCode}.");
-            }
-
-            var movieTitles = await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>();
+            var movieTitles = await GetMovieTitlesByIds( [showtime.MovieId] );
             var showtimeDto = _mapper.Map<ShowtimeDTO>(showtime);
-            showtimeDto.MovieTitle = movieTitles.First().Title;
+            showtimeDto.MovieTitle = movieTitles.IsNullOrEmpty() ? "unknown" : movieTitles.First().Title;
 
             return showtimeDto;
         }
@@ -121,16 +103,11 @@ namespace ScreeningService.Services
         {
             // get showtimes and extract movie ids needed for a request
             var showtimes = await _showtimeRepository.GetByIdsAsync(ids);
-            var movieIds = showtimes.Select(s => s.MovieId).Distinct();
+            var movieIds = showtimes.Select(s => s.MovieId).Distinct().ToArray();
 
-            var response = await _httpClient.GetAsync($"movies/titles?ids={string.Join(",", movieIds)}");
+            // fetch movie titles from MovieService
+            var movieTitles = await GetMovieTitlesByIds(movieIds);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch movie titles, status code {response.StatusCode}.");
-            }
-
-            var movieTitles = await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>();
             var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
 
             // set showtimes movie titles using a dictionary
@@ -152,29 +129,56 @@ namespace ScreeningService.Services
 
         public async Task<ShowtimeDTO?> UpdateAsync(Showtime showtime)
         {
-            var response = await _httpClient.GetAsync($"movies/titles?ids={showtime.MovieId}");
+            // fetch title and duration from MovieService
+            var movieDto = await GetMovieTitleDuration(showtime.MovieId);
 
-            if (!response.IsSuccessStatusCode)
+            // calculate end and check overlapping
+            showtime.End = showtime.Start.AddMinutes(movieDto.Duration);
+
+            if (await _showtimeRepository.ShowtimesOverlap(showtime))
             {
-                throw new Exception($"Failed to fetch movie title with ID={showtime.MovieId}, status code {response.StatusCode}.");
+                throw new Exception($"Bad request, showtimes are overlapping.");
             }
 
-            var movieTitles = await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>();
-
-            if (movieTitles.IsNullOrEmpty())
-            {
-                throw new Exception($"Bad request, movie with ID={showtime.MovieId} does not exist.");
-            }
-
+            // update showtime and fetch it for referenced data
             if (!await _showtimeRepository.UpdateAsync(showtime))
             {
                 return null;
             }
 
-            var showtimeDto = _mapper.Map<ShowtimeDTO>(showtime);
-            showtimeDto.MovieTitle = movieTitles.First().Title;
+            var updatedShowtime = await _showtimeRepository.GetByIdAsync(showtime.Id);
+            var showtimeDto = _mapper.Map<ShowtimeDTO>(updatedShowtime);
+
+            // set missing data fetched earlier from another db
+            showtimeDto.MovieTitle = movieDto.Title;
 
             return showtimeDto;
+        }
+
+        private async Task<MovieTitleDurationDTO> GetMovieTitleDuration(int id)
+        {
+            var response = await _httpClient.GetAsync($"movies/titleduration/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch movie title with ID={id}, status code {response.StatusCode}.");
+            }
+
+            var content = await response.Content.ReadFromJsonAsync<MovieTitleDurationDTO>();
+
+            return content ?? throw new Exception($"Failed to read the response from {response.RequestMessage.RequestUri.ToString()}.");
+        }
+
+        private async Task<List<MovieTitleDTO>> GetMovieTitlesByIds(int[] ids)
+        {
+            var response = await _httpClient.GetAsync($"movies/titles?ids={string.Join(",", ids)}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch movie titles, status code {response.StatusCode}.");
+            }
+
+            return await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>() ?? [];
         }
     }
 }

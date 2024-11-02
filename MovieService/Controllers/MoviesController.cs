@@ -48,7 +48,7 @@ namespace MovieService.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,User")]
+        [AllowAnonymous]
         [HttpGet("titles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -63,6 +63,7 @@ namespace MovieService.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet("titleduration/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

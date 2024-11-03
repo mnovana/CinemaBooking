@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MovieService.Models;
-using MovieService.Models.DTO.Mapping;
-using MovieService.Repositories;
-using MovieService.Repositories.Interfaces;
+using FilmService.Models;
+using FilmService.Models.DTO.Mapping;
+using FilmService.Repositories;
+using FilmService.Repositories.Interfaces;
 using SharedLibrary.Config;
 using SharedLibrary.Middleware;
 using System.Text;
 
-namespace MovieService
+namespace FilmService
 {
     public class Program
     {

@@ -78,9 +78,9 @@ namespace ScreeningService
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
 
             // Http clients
-            builder.Services.AddHttpClient("MovieService", client =>
+            builder.Services.AddHttpClient("FilmService", client =>
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("MOVIE_SERVICE_URL"));
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("FILM_SERVICE_URL"));
             });
 
             builder.Services.AddHttpClient("SeatReservationService", client =>

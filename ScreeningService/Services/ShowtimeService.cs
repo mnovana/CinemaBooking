@@ -23,7 +23,7 @@ namespace ScreeningService.Services
 
         public async Task<ShowtimeDTO> AddAsync(Showtime showtime)
         {   
-            // fetch title and duration from MovieService
+            // fetch title and duration from FilmService
             var movieDto = await GetMovieTitleDuration(showtime.MovieId);
 
             // calculate end and check overlapping
@@ -64,7 +64,7 @@ namespace ScreeningService.Services
             var showtimes = await _showtimeRepository.GetAllAsync();
             var movieIds = showtimes.Select(s => s.MovieId).Distinct().ToArray();
 
-            // fetch movie titles from MovieService
+            // fetch movie titles from FilmService
             var movieTitles = await GetMovieTitlesByIds(movieIds);
 
             var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
@@ -108,7 +108,7 @@ namespace ScreeningService.Services
             var showtimes = await _showtimeRepository.GetByIdsAsync(ids);
             var movieIds = showtimes.Select(s => s.MovieId).Distinct().ToArray();
 
-            // fetch movie titles from MovieService
+            // fetch movie titles from FilmService
             var movieTitles = await GetMovieTitlesByIds(movieIds);
 
             var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
@@ -132,7 +132,7 @@ namespace ScreeningService.Services
 
         public async Task<ShowtimeDTO?> UpdateAsync(Showtime showtime)
         {
-            // fetch title and duration from MovieService
+            // fetch title and duration from FilmService
             var movieDto = await GetMovieTitleDuration(showtime.MovieId);
 
             // calculate end and check overlapping
@@ -160,7 +160,7 @@ namespace ScreeningService.Services
 
         private async Task<MovieTitleDurationDTO> GetMovieTitleDuration(int id)
         {
-            var client = _httpClientFactory.CreateClient("MovieService");
+            var client = _httpClientFactory.CreateClient("FilmService");
             var response = await client.GetAsync($"movies/titleduration/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -175,7 +175,7 @@ namespace ScreeningService.Services
 
         private async Task<List<MovieTitleDTO>> GetMovieTitlesByIds(int[] ids)
         {
-            var client = _httpClientFactory.CreateClient("MovieService");
+            var client = _httpClientFactory.CreateClient("FilmService");
             var response = await client.GetAsync($"movies/titles?ids={string.Join(",", ids)}");
 
             if (!response.IsSuccessStatusCode)

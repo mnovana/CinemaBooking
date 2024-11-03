@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieService.Models;
+using FilmService.Models;
 using SharedLibrary.Models.DTO;
-using MovieService.Repositories.Interfaces;
+using FilmService.Repositories.Interfaces;
 
-namespace MovieService.Repositories
+namespace FilmService.Repositories
 {
     public class MovieRepository : IMovieRepository
     {

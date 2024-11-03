@@ -1,6 +1,6 @@
-﻿using MovieService.Models;
+﻿using FilmService.Models;
 
-namespace MovieService.Repositories.Interfaces
+namespace FilmService.Repositories.Interfaces
 {
     public interface IDirectorRepository
     {

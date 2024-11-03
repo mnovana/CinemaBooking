@@ -1,4 +1,4 @@
-﻿namespace MovieService.Models.DTO
+﻿namespace FilmService.Models.DTO
 {
     public class MovieDTO
     {

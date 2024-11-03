@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
-using MovieService.Models;
-using MovieService.Models.DTO;
+using FilmService.Models;
+using FilmService.Models.DTO;
 using SharedLibrary.Models.DTO;
-using MovieService.Repositories.Interfaces;
+using FilmService.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MovieService.Controllers
+namespace FilmService.Controllers
 {
     [Authorize(Roles = "Admin")]
     [Route("[controller]")]

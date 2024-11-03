@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MovieService.Models;
-using MovieService.Repositories.Interfaces;
+using FilmService.Models;
+using FilmService.Repositories.Interfaces;
 
-namespace MovieService.Controllers
+namespace FilmService.Controllers
 {
     [Authorize(Roles = "Admin")]
     [Route("[controller]")]

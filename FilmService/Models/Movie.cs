@@ -1,7 +1,7 @@
 ﻿using SharedLibrary.CustomValidation;
 using System.ComponentModel.DataAnnotations;
 
-namespace MovieService.Models
+namespace FilmService.Models
 {
     public class Movie
     {

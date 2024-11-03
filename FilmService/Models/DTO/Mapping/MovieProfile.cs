@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace MovieService.Models.DTO.Mapping
+namespace FilmService.Models.DTO.Mapping
 {
     public class MovieProfile : Profile
     {

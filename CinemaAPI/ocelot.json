@@ -30,7 +30,7 @@
       ],
       "SwaggerKey": "UserService"
     },
-    // MovieService
+    // FilmService
     {
       "UpstreamPathTemplate": "/gateway/movies/{id}",
       "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ],
@@ -48,7 +48,7 @@
       "FileCacheOptions": {
         "TtlSeconds": 3600
       },
-      "SwaggerKey": "MovieService"
+      "SwaggerKey": "FilmService"
     },
     {
       "UpstreamPathTemplate": "/gateway/movies",
@@ -67,7 +67,7 @@
       "FileCacheOptions": {
         "TtlSeconds": 3600
       },
-      "SwaggerKey": "MovieService"
+      "SwaggerKey": "FilmService"
     },
     {
       "UpstreamPathTemplate": "/gateway/directors/{id}",
@@ -86,7 +86,7 @@
       "FileCacheOptions": {
         "TtlSeconds": 3600
       },
-      "SwaggerKey": "MovieService"
+      "SwaggerKey": "FilmService"
     },
     {
       "UpstreamPathTemplate": "/gateway/directors",
@@ -105,7 +105,7 @@
       "FileCacheOptions": {
         "TtlSeconds": 3600
       },
-      "SwaggerKey": "MovieService"
+      "SwaggerKey": "FilmService"
     },
     //ScreeningService
     {
@@ -198,10 +198,10 @@
       ]
     },
     {
-      "Key": "MovieService",
+      "Key": "FilmService",
       "Config": [
         {
-          "Name": "MovieService",
+          "Name": "FilmService",
           "Version": "v1",
           "Url": "https://localhost:5003/swagger/v1/swagger.json"
         }

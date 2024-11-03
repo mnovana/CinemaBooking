@@ -19,7 +19,7 @@ namespace SharedLibrary.Config
                 var jwtIssuer = "https://localhost:5001";
                 var jwtAudience = "https://localhost:5002";
                 var userServiceUrl = "https://localhost:5001";
-                var movieServiceUrl = "https://localhost:5003";
+                var filmServiceUrl = "https://localhost:5003";
                 var screeningServiceUrl = "https://localhost:5004";
                 var seatReservationServiceUrl = "https://localhost:5005";
 
@@ -27,7 +27,7 @@ namespace SharedLibrary.Config
                     $"JWT_ISSUER={jwtIssuer}\n" +
                     $"JWT_AUDIENCE={jwtAudience}\n" +
                     $"USER_SERVICE_URL={userServiceUrl}\n" +
-                    $"MOVIE_SERVICE_URL={movieServiceUrl}\n" +
+                    $"FILM_SERVICE_URL={filmServiceUrl}\n" +
                     $"SCREENING_SERVICE_URL={screeningServiceUrl}\n" +
                     $"SEATRESERVATION_SERVICE_URL={seatReservationServiceUrl}";
                 

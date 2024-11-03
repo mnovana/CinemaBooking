@@ -1,7 +1,7 @@
-﻿using MovieService.Models;
+﻿using FilmService.Models;
 using SharedLibrary.Models.DTO;
 
-namespace MovieService.Repositories.Interfaces
+namespace FilmService.Repositories.Interfaces
 {
     public interface IMovieRepository
     {

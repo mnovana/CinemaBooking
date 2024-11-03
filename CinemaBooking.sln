@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieService", "MovieService\MovieService.csproj", "{C5606D0E-27FC-4A39-82DE-85E7A32EA9CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmService", "FilmService\FilmService.csproj", "{C5606D0E-27FC-4A39-82DE-85E7A32EA9CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{DF136567-93A0-4A69-B3FD-852DCD68CA83}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningService", "Screeni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeatReservationService", "SeatReservationService\SeatReservationService.csproj", "{7B39680B-2629-4D2D-897E-0B7E9126FB3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaAPI", "CinemaAPI\CinemaAPI.csproj", "{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CinemaAPI", "CinemaAPI\CinemaAPI.csproj", "{B9C589CA-8037-4DCC-BD3B-B191BD6DD928}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

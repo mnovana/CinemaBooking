@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieService.Models
+namespace FilmService.Models
 {
-    public class Director
+    public class Genre
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(150)]
+        [StringLength(50)]
         public string Name { get; set; }
     }
 }

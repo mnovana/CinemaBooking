@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieService.Models;
+using FilmService.Models;
 
 #nullable disable
 
-namespace MovieService.Migrations
+namespace FilmService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20241017184157_Initial")]
@@ -25,7 +25,7 @@ namespace MovieService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MovieService.Models.Director", b =>
+            modelBuilder.Entity("FilmService.Models.Director", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace MovieService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MovieService.Models.Genre", b =>
+            modelBuilder.Entity("FilmService.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace MovieService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MovieService.Models.Movie", b =>
+            modelBuilder.Entity("FilmService.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,15 +211,15 @@ namespace MovieService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MovieService.Models.Movie", b =>
+            modelBuilder.Entity("FilmService.Models.Movie", b =>
                 {
-                    b.HasOne("MovieService.Models.Director", "Director")
+                    b.HasOne("FilmService.Models.Director", "Director")
                         .WithMany()
                         .HasForeignKey("DirectorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieService.Models.Genre", "Genre")
+                    b.HasOne("FilmService.Models.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)

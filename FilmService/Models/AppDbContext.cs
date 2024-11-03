@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace MovieService.Models
+namespace FilmService.Models
 {
     public class AppDbContext : DbContext
     {

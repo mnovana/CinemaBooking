@@ -17,7 +17,7 @@ namespace ScreeningService.Models
         public int ScreeningRoomId { get; set; }
         public ScreeningRoom? ScreeningRoom { get; set; }
 
-        // from MovieService
+        // from FilmService
         [Required]
         public int MovieId { get; set; }
     }

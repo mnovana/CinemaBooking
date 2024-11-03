@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieService.Models;
-using MovieService.Repositories.Interfaces;
+using FilmService.Models;
+using FilmService.Repositories.Interfaces;
 
-namespace MovieService.Repositories
+namespace FilmService.Repositories
 {
     public class DirectorRepository : IDirectorRepository
     {

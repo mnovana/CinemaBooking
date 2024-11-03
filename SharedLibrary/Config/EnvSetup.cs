@@ -28,7 +28,7 @@ namespace SharedLibrary.Config
                     $"JWT_AUDIENCE={jwtAudience}\n" +
                     $"USER_SERVICE_URL={userServiceUrl}\n" +
                     $"MOVIE_SERVICE_URL={movieServiceUrl}\n" +
-                    $"SCREENING_SERVICE_URL={screeningServiceUrl}" +
+                    $"SCREENING_SERVICE_URL={screeningServiceUrl}\n" +
                     $"SEATRESERVATION_SERVICE_URL={seatReservationServiceUrl}";
                 
                 File.WriteAllText(envFilePath, envContent);

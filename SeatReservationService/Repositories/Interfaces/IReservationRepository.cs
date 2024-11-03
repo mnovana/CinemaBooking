@@ -6,7 +6,7 @@ namespace SeatReservationService.Repositories.Interfaces
     {
         Task<IEnumerable<Reservation>> GetAllAsync();
         Task<Reservation?> GetByIdAsync(int id);
-        Task<IEnumerable<int>> GetTakenSeats(int showtimeId, int[] seatsIds);
+        Task<IEnumerable<int>> GetTakenSeatsAsync(int showtimeId, int[] seatsIds);
         Task AddAsync(Reservation reservation);
         Task<bool> UpdateAsync(Reservation reservation);
         Task<bool> DeleteAsync(int id);

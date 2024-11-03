@@ -42,7 +42,7 @@ namespace SeatReservationService.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<IEnumerable<int>> GetTakenSeats(int showtimeId, int[] seatsIds)
+        public async Task<IEnumerable<int>> GetTakenSeatsAsync(int showtimeId, int[] seatsIds)
         {
             return await _context.ReservedSeats
                 .Include(rs => rs.Reservation)

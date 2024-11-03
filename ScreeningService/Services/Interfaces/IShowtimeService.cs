@@ -11,5 +11,6 @@ namespace ScreeningService.Services.Interfaces
         Task<ShowtimeDTO> AddAsync(Showtime showtime);
         Task<ShowtimeDTO?> UpdateAsync(Showtime showtime);
         Task<bool> DeleteAsync(int id);
+        Task<bool> ShowtimeWithMovieIdExistsAsync(int movieId);
     }
 }

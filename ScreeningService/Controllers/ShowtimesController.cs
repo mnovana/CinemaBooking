@@ -134,5 +134,25 @@ namespace ScreeningService.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("movie/{movieId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ShowtimeWithMovieExists(int movieId)
+        {
+            if (!await _showtimeService.ShowtimeWithMovieIdExistsAsync(movieId))
+            {
+                return NotFound(new ProblemDetails
+                {
+                    Status = 404,
+                    Title = "Showtimes do not exist",
+                    Detail = $"There are no showtimes with movieID={movieId}."
+                });
+            }
+
+            return Ok();
+        }
+
     }
 }

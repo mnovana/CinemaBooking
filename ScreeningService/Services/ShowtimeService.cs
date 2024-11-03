@@ -130,6 +130,11 @@ namespace ScreeningService.Services
             return showtimesDto;
         }
 
+        public async Task<bool> ShowtimeWithMovieIdExistsAsync(int movieId)
+        {
+            return await _showtimeRepository.ShowtimeWithMovieIdExistsAsync(movieId);
+        }
+
         public async Task<ShowtimeDTO?> UpdateAsync(Showtime showtime)
         {
             // fetch title and duration from FilmService

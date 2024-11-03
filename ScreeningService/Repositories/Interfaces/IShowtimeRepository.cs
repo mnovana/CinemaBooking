@@ -13,5 +13,6 @@ namespace ScreeningService.Repositories.Interfaces
         Task<IEnumerable<Showtime>> GetByMovieId(int movieId);
         Task<IEnumerable<Showtime>> GetByDate(DateTime date);
         Task<bool> ShowtimesOverlap(Showtime showtime);
+        Task<bool> ShowtimeWithMovieIdExistsAsync(int movieId);
     }
 }

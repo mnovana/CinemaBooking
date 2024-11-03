@@ -79,6 +79,11 @@ namespace ScreeningService.Repositories
                 );
         }
 
+        public async Task<bool> ShowtimeWithMovieIdExistsAsync(int movieId)
+        {
+            return await _context.Showtimes.AnyAsync(s => s.MovieId == movieId);
+        }
+
         public async Task<bool> UpdateAsync(Showtime showtime)
         {
             _context.Entry(showtime).State = EntityState.Modified;

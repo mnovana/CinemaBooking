@@ -77,8 +77,16 @@ namespace ScreeningService
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
 
-            // Http client
-            builder.Services.AddHttpClient();
+            // Http clients
+            builder.Services.AddHttpClient("MovieService", client =>
+            {
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("MOVIE_SERVICE_URL"));
+            });
+
+            builder.Services.AddHttpClient("SeatReservationService", client =>
+            {
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SEATRESERVATION_SERVICE_URL"));
+            });
 
             var app = builder.Build();
 

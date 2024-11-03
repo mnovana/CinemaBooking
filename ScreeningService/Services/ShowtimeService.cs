@@ -11,16 +11,14 @@ namespace ScreeningService.Services
     public class ShowtimeService : IShowtimeService
     {
         private readonly IShowtimeRepository _showtimeRepository;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
 
-        public ShowtimeService(IShowtimeRepository showtimeRepository, HttpClient httpClient, IMapper mapper)
+        public ShowtimeService(IShowtimeRepository showtimeRepository, IHttpClientFactory httpClientFactory, IMapper mapper)
         {
             _showtimeRepository = showtimeRepository;
             _mapper = mapper;
-            _httpClient = httpClient;
-
-            _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("MOVIE_SERVICE_URL"));
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<ShowtimeDTO> AddAsync(Showtime showtime)
@@ -52,6 +50,11 @@ namespace ScreeningService.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
+            if (await ReservationWithShowtimeExistsAsync(id))
+            {
+                throw new Exception($"Bad request, showtime with ID={id} could not be deleted because at least one reservation uses it.");
+            }
+            
             return await _showtimeRepository.DeleteAsync(id);
         }
 
@@ -157,7 +160,8 @@ namespace ScreeningService.Services
 
         private async Task<MovieTitleDurationDTO> GetMovieTitleDuration(int id)
         {
-            var response = await _httpClient.GetAsync($"movies/titleduration/{id}");
+            var client = _httpClientFactory.CreateClient("MovieService");
+            var response = await client.GetAsync($"movies/titleduration/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -171,7 +175,8 @@ namespace ScreeningService.Services
 
         private async Task<List<MovieTitleDTO>> GetMovieTitlesByIds(int[] ids)
         {
-            var response = await _httpClient.GetAsync($"movies/titles?ids={string.Join(",", ids)}");
+            var client = _httpClientFactory.CreateClient("MovieService");
+            var response = await client.GetAsync($"movies/titles?ids={string.Join(",", ids)}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -179,6 +184,25 @@ namespace ScreeningService.Services
             }
 
             return await response.Content.ReadFromJsonAsync<List<MovieTitleDTO>>() ?? [];
+        }
+
+        private async Task<bool> ReservationWithShowtimeExistsAsync(int showtimeId)
+        {
+            var client = _httpClientFactory.CreateClient("SeatReservationService");
+            var response = await client.GetAsync($"reservations/showtime/{showtimeId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else if ((int)response.StatusCode == StatusCodes.Status404NotFound)
+            {
+                return false;
+            }
+            else
+            {
+                throw new Exception($"Failed to check if reservation exists, response from SeatReservationService: {response.StatusCode}");
+            }
         }
     }
 }

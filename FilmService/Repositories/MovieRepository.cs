@@ -52,7 +52,7 @@ namespace FilmService.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<IEnumerable<MovieTitleDTO>> GetTitlesByIdsAsync(List<int> ids)
+        public async Task<IEnumerable<MovieTitleDTO>> GetTitlesByIdsAsync(int[] ids)
         {
             return await _context.Movies
                 .Where(m => ids.Contains(m.Id))

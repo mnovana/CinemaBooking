@@ -9,6 +9,8 @@ using FilmService.Repositories.Interfaces;
 using SharedLibrary.Config;
 using SharedLibrary.Middleware;
 using System.Text;
+using FilmService.Services;
+using FilmService.Services.Interfaces;
 
 namespace FilmService
 {
@@ -68,8 +70,14 @@ namespace FilmService
             builder.Services.AddScoped<IDirectorRepository, DirectorRepository>();
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
+            // Services
+            builder.Services.AddScoped<IMovieService, MovieService>();
+
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
+
+            // Http client
+            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 

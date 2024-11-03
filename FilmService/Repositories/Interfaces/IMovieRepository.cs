@@ -11,6 +11,6 @@ namespace FilmService.Repositories.Interfaces
         Task AddAsync(Movie movie);
         Task<bool> UpdateAsync(Movie movie);
         Task<bool> DeleteAsync(int id);
-        Task<IEnumerable<MovieTitleDTO>> GetTitlesByIdsAsync(List<int> ids);
+        Task<IEnumerable<MovieTitleDTO>> GetTitlesByIdsAsync(int[] ids);
     }
 }

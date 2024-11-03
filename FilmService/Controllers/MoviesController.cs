@@ -6,6 +6,7 @@ using FilmService.Models.DTO;
 using SharedLibrary.Models.DTO;
 using FilmService.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using FilmService.Services.Interfaces;
 
 namespace FilmService.Controllers
 {
@@ -14,15 +15,13 @@ namespace FilmService.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IMovieRepository _movieRepository;
+        private readonly IMovieService _movieService;
         private readonly ILogger<MoviesController> _logger;
-        private readonly IMapper _mapper;
 
-        public MoviesController(IMovieRepository movieRepository, ILogger<MoviesController> logger, IMapper mapper)
+        public MoviesController(IMovieService movieService, ILogger<MoviesController> logger)
         {
-            _movieRepository = movieRepository;
+            _movieService = movieService;
             _logger = logger;
-            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -30,7 +29,7 @@ namespace FilmService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieById(int id)
         {
-            var movie = await _movieRepository.GetByIdAsync(id);
+            var movie = await _movieService.GetByIdAsync(id);
 
             if (movie == null)
             {
@@ -44,7 +43,7 @@ namespace FilmService.Controllers
             }
             else
             {
-                return Ok(_mapper.Map<MovieDTO>(movie));
+                return Ok(movie);
             }
         }
 
@@ -54,12 +53,12 @@ namespace FilmService.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMovieTitlesByIds([FromQuery]string ids)
         {
-            List<int> idsList = ids
+            int[] idsArray = ids
                 .Split(',')
                 .Select(stringId => int.Parse(stringId))
-                .ToList();
+                .ToArray();
             
-            return Ok(await _movieRepository.GetTitlesByIdsAsync(idsList));
+            return Ok(await _movieService.GetTitlesByIdsAsync(idsArray));
 
         }
 
@@ -69,7 +68,7 @@ namespace FilmService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieTitleDuration(int id)
         {
-            MovieTitleDurationDTO? movie = await _movieRepository.GetTitleDurationByIdAsync(id);
+            MovieTitleDurationDTO? movie = await _movieService.GetTitleDurationByIdAsync(id);
 
             if (movie == null)
             {
@@ -91,9 +90,7 @@ namespace FilmService.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMovies()
         {
-            var movies = await _movieRepository.GetAllAsync();
-            
-            return Ok(movies.AsQueryable().ProjectTo<MovieDTO>(_mapper.ConfigurationProvider));
+            return Ok(await _movieService.GetAllAsync());
         }
 
         [HttpPost]
@@ -101,9 +98,9 @@ namespace FilmService.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostMovie(Movie movie)
         {
-            await _movieRepository.AddAsync(movie);
+            var createdMovie = await _movieService.AddAsync(movie);
 
-            return CreatedAtAction(nameof(GetMovieById), new { id = movie.Id }, _mapper.Map<MovieDTO>(movie));
+            return CreatedAtAction(nameof(GetMovieById), new { id = movie.Id }, createdMovie);
         }
 
         [HttpPut("{id}")]
@@ -123,7 +120,8 @@ namespace FilmService.Controllers
                 });
             }
 
-            if (!await _movieRepository.UpdateAsync(movie))
+            var updatedMovie = await _movieService.UpdateAsync(movie);
+            if (updatedMovie == null)
             {
                 _logger.LogWarning("Movie with ID={id} not found.", id);
                 return NotFound(new ProblemDetails
@@ -134,7 +132,7 @@ namespace FilmService.Controllers
                 });
             }
 
-            return Ok(_mapper.Map<MovieDTO>(movie));
+            return Ok(updatedMovie);
         }
 
         [HttpDelete("{id}")]
@@ -142,7 +140,7 @@ namespace FilmService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            if (await _movieRepository.DeleteAsync(id))
+            if (await _movieService.DeleteAsync(id))
             {
                 return NoContent();
             }

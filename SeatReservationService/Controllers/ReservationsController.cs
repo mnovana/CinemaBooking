@@ -116,5 +116,25 @@ namespace SeatReservationService.Controllers
                 });
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("showtime/{showtimeId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ReservationWithShowtimeExists(int showtimeId)
+        {
+            if(!await _reservationService.ReservationWithShowtimeIdExistsAsync(showtimeId))
+            {
+                return NotFound(new ProblemDetails
+                {
+                    Status = 404,
+                    Title = "Reservations do not exist",
+                    Detail = $"There are no reservations with showtimeID={showtimeId}."
+                });
+            }
+
+            return Ok();
+        }
     }
 }

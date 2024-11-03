@@ -51,6 +51,11 @@ namespace SeatReservationService.Repositories
                 .ToArrayAsync();
         }
 
+        public async Task<bool> ReservationWithShowtimeIdExistsAsync(int showtimeId)
+        {
+            return await _context.Reservations.AnyAsync(r => r.ShowtimeId == showtimeId);
+        }
+
         public async Task<bool> UpdateAsync(Reservation reservation)
         {
             // delete existing ReservedSeat rows

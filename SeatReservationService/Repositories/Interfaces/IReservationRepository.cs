@@ -10,5 +10,6 @@ namespace SeatReservationService.Repositories.Interfaces
         Task AddAsync(Reservation reservation);
         Task<bool> UpdateAsync(Reservation reservation);
         Task<bool> DeleteAsync(int id);
+        Task<bool> ReservationWithShowtimeIdExistsAsync(int showtimeId);
     }
 }

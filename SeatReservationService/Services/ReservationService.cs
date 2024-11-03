@@ -282,5 +282,10 @@ namespace SeatReservationService.Services
 
             return client;
         }
+
+        public async Task<bool> ReservationWithShowtimeIdExistsAsync(int showtimeId)
+        {
+            return await _reservationRepository.ReservationWithShowtimeIdExistsAsync(showtimeId);
+        }
     }
 }

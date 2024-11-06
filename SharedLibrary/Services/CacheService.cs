@@ -14,7 +14,7 @@ namespace SharedLibrary.Services
             _cache = cache;
         }
         
-        public async Task<T> GetDataAsync<T>(string key)
+        public async Task<T?> GetDataAsync<T>(string key)
         {
             var value = await _cache.GetStringAsync(key);
 

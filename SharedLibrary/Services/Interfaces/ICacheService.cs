@@ -4,6 +4,6 @@
     {
         Task<T> GetData<T>(string key);
         Task SetData<T>(string key, T value, DateTimeOffset expirationTime);
-        Task RemoveData<T>(string key);
+        Task RemoveData(string key);
     }
 }

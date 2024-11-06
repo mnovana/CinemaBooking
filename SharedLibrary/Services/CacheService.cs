@@ -26,7 +26,7 @@ namespace SharedLibrary.Services
             return default;
         }
 
-        public async Task RemoveData<T>(string key)
+        public async Task RemoveData(string key)
         {
             await _cache.RemoveAsync(key);
         }

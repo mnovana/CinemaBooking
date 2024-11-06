@@ -35,7 +35,7 @@ namespace SharedLibrary.Services
         {
             var cacheEntryOptions = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+                AbsoluteExpiration = expirationTime
             };
 
             await _cache.SetStringAsync(key, JsonSerializer.Serialize(value), cacheEntryOptions);

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FilmService.Models;
-using FilmService.Models.DTO;
 using FilmService.Repositories.Interfaces;
 using FilmService.Services.Interfaces;
 using SharedLibrary.Models.DTO;

@@ -1,6 +1,5 @@
 ﻿
 using FilmService.Models;
-using FilmService.Models.DTO;
 using SharedLibrary.Models.DTO;
 
 namespace FilmService.Services.Interfaces

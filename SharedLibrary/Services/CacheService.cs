@@ -14,7 +14,7 @@ namespace SharedLibrary.Services
             _cache = cache;
         }
         
-        public async Task<T> GetData<T>(string key)
+        public async Task<T> GetDataAsync<T>(string key)
         {
             var value = await _cache.GetStringAsync(key);
 
@@ -26,12 +26,12 @@ namespace SharedLibrary.Services
             return default;
         }
 
-        public async Task RemoveData(string key)
+        public async Task RemoveDataAsync(string key)
         {
             await _cache.RemoveAsync(key);
         }
 
-        public async Task SetData<T>(string key, T value, DateTimeOffset expirationTime)
+        public async Task SetDataAsync<T>(string key, T value, DateTimeOffset expirationTime)
         {
             var cacheEntryOptions = new DistributedCacheEntryOptions
             {

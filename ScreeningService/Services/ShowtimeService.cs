@@ -5,6 +5,7 @@ using ScreeningService.Models;
 using SharedLibrary.Models.DTO;
 using ScreeningService.Repositories.Interfaces;
 using ScreeningService.Services.Interfaces;
+using SharedLibrary.Services.Interfaces;
 
 namespace ScreeningService.Services
 {
@@ -13,12 +14,14 @@ namespace ScreeningService.Services
         private readonly IShowtimeRepository _showtimeRepository;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
 
-        public ShowtimeService(IShowtimeRepository showtimeRepository, IHttpClientFactory httpClientFactory, IMapper mapper)
+        public ShowtimeService(IShowtimeRepository showtimeRepository, IHttpClientFactory httpClientFactory, IMapper mapper, ICacheService cacheService)
         {
             _showtimeRepository = showtimeRepository;
             _mapper = mapper;
             _httpClientFactory = httpClientFactory;
+            _cacheService = cacheService;
         }
 
         public async Task<ShowtimeDTO> AddAsync(Showtime showtime)

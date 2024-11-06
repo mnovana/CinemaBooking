@@ -10,6 +10,8 @@ using ScreeningService.Services;
 using ScreeningService.Services.Interfaces;
 using SharedLibrary.Config;
 using SharedLibrary.Middleware;
+using SharedLibrary.Services.Interfaces;
+using SharedLibrary.Services;
 using System.Text;
 
 namespace ScreeningService
@@ -27,6 +29,13 @@ namespace ScreeningService
             // Database for EF  
             builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(ConfigurationExtensions.GetConnectionString(builder.Configuration, "AppConnectionString")));
+
+            // Redis
+            builder.Services.AddStackExchangeRedisCache(redisOptions =>
+            {
+                string connection = builder.Configuration.GetConnectionString("Redis");
+                redisOptions.Configuration = connection;
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -73,6 +82,7 @@ namespace ScreeningService
             // Services
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
             builder.Services.AddScoped<ISeatService, SeatService>();
+            builder.Services.AddSingleton<ICacheService, CacheService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

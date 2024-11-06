@@ -58,6 +58,8 @@ namespace ScreeningService.Services
                 throw new Exception($"Bad request, showtime with ID={id} could not be deleted because at least one reservation uses it.");
             }
             
+            await _cacheService.RemoveDataAsync($"showtime-{id}");
+            
             return await _showtimeRepository.DeleteAsync(id);
         }
 

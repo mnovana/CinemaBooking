@@ -38,6 +38,9 @@ namespace FilmService.Services
                 throw new Exception($"Bad request, movie with ID={id} could not be deleted because at least one showtime uses it.");
             }
 
+            await _cacheService.RemoveDataAsync($"movieTitle-{id}");
+            await _cacheService.RemoveDataAsync($"movieTitleDuration-{id}");
+
             return await _movieRepository.DeleteAsync(id);
         }
 

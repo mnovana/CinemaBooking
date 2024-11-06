@@ -9,6 +9,7 @@ using SharedLibrary.Models.DTO;
 using System.Security.Claims;
 using System.Net.Http.Headers;
 using SharedLibrary.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SeatReservationService.Services
 {
@@ -203,29 +204,74 @@ namespace SeatReservationService.Services
 
         private async Task<ShowtimeDTO> GetShowtimeByIdAsync(int id)
         {
-            var client = GetClientWithToken("ScreeningService");
-            var response = await client.GetAsync($"showtimes/{id}");
+            // search for showtime in cache
+            var cachedShowtime = await _cacheService.GetDataAsync<ShowtimeDTO>($"showtime-{id}");
 
-            if (!response.IsSuccessStatusCode)
+            // if not existent, fetch from ScreeningService
+            if (cachedShowtime != null)
             {
-                throw new Exception($"Failed to fetch showtime with ID={id}, status code {response.StatusCode}.");
+                return cachedShowtime;
             }
+            else
+            {
+                var client = GetClientWithToken("ScreeningService");
+                var response = await client.GetAsync($"showtimes/{id}");
 
-            return await response.Content.ReadFromJsonAsync<ShowtimeDTO>();
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to fetch showtime with ID={id}, status code {response.StatusCode}.");
+                }
+
+                var content = await response.Content.ReadFromJsonAsync<ShowtimeDTO>();
+
+                if (content == null)
+                {
+                    throw new Exception($"Failed to read the response from {response.RequestMessage.RequestUri.ToString()}.");
+                }
+
+                // set cache
+                await _cacheService.SetDataAsync($"showtime-{id}", content, DateTimeOffset.Now.AddHours(1));
+
+                return content;
+            }
         }
 
         private async Task<List<ShowtimeDTO>> GetShowtimesByIdsAsync(int[] ids)
         {
-            var client = GetClientWithToken("ScreeningService");
-            var response = await client.GetAsync($"showtimes/byids?ids={string.Join(',', ids)}");
+            // search for showtimes in cache
+            var cachedShowtimes = await _cacheService.GetMultipleDataAsync<ShowtimeDTO>(ids.Select(id => $"showtime-{id}").ToArray());
 
-            if (!response.IsSuccessStatusCode)
+            var idsHashset = new HashSet<int>(ids);
+            var cachedIdsHashset = new HashSet<int>(cachedShowtimes.Select(showtime => showtime.Id));
+            // missing ids
+            idsHashset.ExceptWith(cachedIdsHashset);
+
+            if (idsHashset.IsNullOrEmpty())
             {
-                var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-                throw new Exception($"Failed to fetch showtimes: {problem.Detail}");
+                return cachedShowtimes.ToList();
             }
+            else
+            {
+                var client = GetClientWithToken("ScreeningService");
+                var response = await client.GetAsync($"showtimes/byids?ids={string.Join(',', idsHashset)}");
 
-            return await response.Content.ReadFromJsonAsync<List<ShowtimeDTO>>();
+                if (!response.IsSuccessStatusCode)
+                {
+                    var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+                    throw new Exception($"Failed to fetch showtimes: {problem.Detail}");
+                }
+
+                var fetchedShowtimes = await response.Content.ReadFromJsonAsync<List<ShowtimeDTO>>() ?? [];
+
+                // set cache
+                var fetchedShowtimesDict = fetchedShowtimes.ToDictionary(s => $"showtime-{s.Id}", s => s);
+                await _cacheService.SetMultipleDataAsync(fetchedShowtimesDict, DateTimeOffset.Now.AddHours(1));
+
+                // combine fetched and cached showtimes
+                fetchedShowtimes.AddRange(cachedShowtimes);
+
+                return fetchedShowtimes;
+            }
         }
 
         private async Task<List<SeatDTO>> GetSeatsByIdsAsync(int[] ids, int sreeningRoomNumber)

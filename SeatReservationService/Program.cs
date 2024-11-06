@@ -9,6 +9,8 @@ using SeatReservationService.Services;
 using SeatReservationService.Services.Interfaces;
 using SharedLibrary.Config;
 using SharedLibrary.Middleware;
+using SharedLibrary.Services.Interfaces;
+using SharedLibrary.Services;
 using System.Text;
 
 namespace SeatReservationService
@@ -28,6 +30,13 @@ namespace SeatReservationService
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString));
+
+            // Redis
+            builder.Services.AddStackExchangeRedisCache(redisOptions =>
+            {
+                string connection = builder.Configuration.GetConnectionString("Redis");
+                redisOptions.Configuration = connection;
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -72,6 +81,7 @@ namespace SeatReservationService
 
             // Services
             builder.Services.AddScoped<IReservationService, ReservationService>();
+            builder.Services.AddSingleton<ICacheService, CacheService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

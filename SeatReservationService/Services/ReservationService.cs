@@ -8,6 +8,7 @@ using SeatReservationService.Services.Interfaces;
 using SharedLibrary.Models.DTO;
 using System.Security.Claims;
 using System.Net.Http.Headers;
+using SharedLibrary.Services.Interfaces;
 
 namespace SeatReservationService.Services
 {
@@ -17,14 +18,16 @@ namespace SeatReservationService.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICacheService _cacheService;
         private readonly string _token;
 
-        public ReservationService(IReservationRepository reservationRepository, IHttpClientFactory httpClientFactory, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public ReservationService(IReservationRepository reservationRepository, IHttpClientFactory httpClientFactory, IMapper mapper, IHttpContextAccessor httpContextAccessor, ICacheService cacheService)
         {
             _reservationRepository = reservationRepository;
             _httpClientFactory = httpClientFactory;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _cacheService = cacheService;
 
             _token = _httpContextAccessor.HttpContext.Request.Headers["Authorization"]
                 .ToString()

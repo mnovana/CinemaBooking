@@ -4,6 +4,7 @@ using FilmService.Models;
 using FilmService.Repositories.Interfaces;
 using FilmService.Services.Interfaces;
 using SharedLibrary.Models.DTO;
+using SharedLibrary.Services.Interfaces;
 
 namespace FilmService.Services
 {
@@ -12,12 +13,14 @@ namespace FilmService.Services
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
+        private readonly ICacheService _cacheService;
 
-        public MovieService(IMovieRepository movieRepository, IMapper mapper, HttpClient httpClient)
+        public MovieService(IMovieRepository movieRepository, IMapper mapper, HttpClient httpClient, ICacheService cacheService)
         {
             _movieRepository = movieRepository;
             _mapper = mapper;
             _httpClient = httpClient;
+            _cacheService = cacheService;
         }
         
         public async Task<MovieDTO> AddAsync(Movie movie)

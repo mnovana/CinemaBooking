@@ -11,6 +11,8 @@ using SharedLibrary.Middleware;
 using System.Text;
 using FilmService.Services;
 using FilmService.Services.Interfaces;
+using SharedLibrary.Services.Interfaces;
+using SharedLibrary.Services;
 
 namespace FilmService
 {
@@ -27,6 +29,13 @@ namespace FilmService
             // Database for EF  
             builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(ConfigurationExtensions.GetConnectionString(builder.Configuration, "AppConnectionString")));
+
+            // Redis
+            builder.Services.AddStackExchangeRedisCache(redisOptions =>
+            {
+                string connection = builder.Configuration.GetConnectionString("Redis");
+                redisOptions.Configuration = connection;
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -72,6 +81,7 @@ namespace FilmService
 
             // Services
             builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddSingleton<ICacheService, CacheService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

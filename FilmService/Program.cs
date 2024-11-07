@@ -13,6 +13,7 @@ using FilmService.Services;
 using FilmService.Services.Interfaces;
 using SharedLibrary.Services.Interfaces;
 using SharedLibrary.Services;
+using StackExchange.Redis;
 
 namespace FilmService
 {
@@ -31,11 +32,7 @@ namespace FilmService
                     options.UseSqlServer(ConfigurationExtensions.GetConnectionString(builder.Configuration, "AppConnectionString")));
 
             // Redis
-            builder.Services.AddStackExchangeRedisCache(redisOptions =>
-            {
-                string connection = builder.Configuration.GetConnectionString("Redis");
-                redisOptions.Configuration = connection;
-            });
+            builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

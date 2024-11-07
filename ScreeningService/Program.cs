@@ -82,7 +82,7 @@ namespace ScreeningService
             // Services
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
             builder.Services.AddScoped<ISeatService, SeatService>();
-            builder.Services.AddSingleton<ICacheService, CacheService>();
+            builder.Services.AddSingleton<ICacheService, RedisCacheService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

@@ -81,7 +81,7 @@ namespace FilmService
 
             // Services
             builder.Services.AddScoped<IMovieService, MovieService>();
-            builder.Services.AddSingleton<ICacheService, CacheService>();
+            builder.Services.AddSingleton<ICacheService, RedisCacheService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

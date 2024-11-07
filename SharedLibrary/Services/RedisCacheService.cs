@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using SharedLibrary.Services.Interfaces;
 using System.Text.Json;
 
 namespace SharedLibrary.Services
 {
-    public class CacheService : ICacheService
+    public class RedisCacheService : ICacheService
     {
         public readonly IDistributedCache _cache;
 
-        public CacheService(IDistributedCache cache)
+        public RedisCacheService(IDistributedCache cache)
         {
             _cache = cache;
         }

@@ -81,7 +81,7 @@ namespace SeatReservationService
 
             // Services
             builder.Services.AddScoped<IReservationService, ReservationService>();
-            builder.Services.AddSingleton<ICacheService, CacheService>();
+            builder.Services.AddSingleton<ICacheService, RedisCacheService>();
 
             // IMiddleware
             builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();

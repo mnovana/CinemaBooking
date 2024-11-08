@@ -1,21 +1,22 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using SharedLibrary.Services.Interfaces;
+﻿using SharedLibrary.Services.Interfaces;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace SharedLibrary.Services
 {
     public class RedisCacheService : ICacheService
     {
-        public readonly IDistributedCache _cache;
+        public readonly IConnectionMultiplexer _connectionMultiplexer;
 
-        public RedisCacheService(IDistributedCache cache)
+        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer)
         {
-            _cache = cache;
+            _connectionMultiplexer = connectionMultiplexer;
         }
         
         public async Task<T?> GetDataAsync<T>(string key)
         {
-            var value = await _cache.GetStringAsync(key);
+            var db = _connectionMultiplexer.GetDatabase();
+            var value = await db.StringGetAsync(key);
 
             if(!string.IsNullOrEmpty(value))
             {
@@ -25,49 +26,36 @@ namespace SharedLibrary.Services
             return default;
         }
 
-        public async Task<IEnumerable<T>> GetMultipleDataAsync<T>(string[] keys)
+        public async Task<IEnumerable<T?>> GetMultipleDataAsync<T>(string[] keys)
         {
-            var values = new List<T>();
+            var db = _connectionMultiplexer.GetDatabase();
+            var redisKeys = keys.Select(key => new RedisKey(key)).ToArray();
+            var redisValues = await db.StringGetAsync(redisKeys);
 
-            foreach (var key in keys)
-            {
-                var value = await _cache.GetStringAsync(key);
-
-                if (!string.IsNullOrEmpty(value))
-                {
-                    values.Add(JsonSerializer.Deserialize<T>(value));
-                }
-            }
+            var values = redisValues.Select(redisValue => JsonSerializer.Deserialize<T>(redisValue));
 
             return values;
         }
 
         public async Task RemoveDataAsync(string key)
         {
-            await _cache.RemoveAsync(key);
+            var db = _connectionMultiplexer.GetDatabase();
+            await db.KeyDeleteAsync(key);
         }
 
-        public async Task SetDataAsync<T>(string key, T value, DateTimeOffset expirationTime)
+        public async Task SetDataAsync<T>(string key, T value, TimeSpan expirationTime)
         {
-            var cacheEntryOptions = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpiration = expirationTime
-            };
-
-            await _cache.SetStringAsync(key, JsonSerializer.Serialize(value), cacheEntryOptions);
+            var db = _connectionMultiplexer.GetDatabase();
+            await db.StringSetAsync(key, JsonSerializer.Serialize(value), expirationTime);
         }
 
-        public async Task SetMultipleDataAsync<T>(Dictionary<string, T> entries, DateTimeOffset expirationTime)
+        public async Task SetMultipleDataAsync<T>(Dictionary<string, T> entries, TimeSpan expirationTime)
         {
-            var cacheEntryOptions = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpiration = expirationTime
-            };
+            var db = _connectionMultiplexer.GetDatabase();
 
-            foreach(KeyValuePair<string, T> entry in entries)
-            {
-                await _cache.SetStringAsync(entry.Key, JsonSerializer.Serialize(entry.Value), cacheEntryOptions);
-            }
+            var tasks = entries.Select(entry => db.StringSetAsync(entry.Key, JsonSerializer.Serialize(entry.Value), expirationTime));
+
+            await Task.WhenAll(tasks);
         }
     }
 }

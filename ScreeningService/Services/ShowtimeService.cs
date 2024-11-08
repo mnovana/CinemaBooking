@@ -207,19 +207,26 @@ namespace ScreeningService.Services
             // search for titles in cache
             var cachedMovieTitles = await GetCachedMovieTitlesByIdsAsync(ids);
 
-            var idsHashset = new HashSet<int>(ids);
-            var cachedIdsHashset = new HashSet<int>(cachedMovieTitles.Select(movie => movie.Id));
-            // missing ids
-            idsHashset.ExceptWith(cachedIdsHashset);
+            // find missing movie ids and delete nulls from the list of movies
+            // use the fact that ids and cachedMoviesTitles have the same order
+            List<int> missingIds = new List<int>();
+            for (int i=cachedMovieTitles.Count-1; i>=0; i--)
+            {
+                if (cachedMovieTitles[i] == null)
+                {
+                    missingIds.Add(ids[i]);
+                    cachedMovieTitles.RemoveAt(i);
+                }
+            }
 
-            if (idsHashset.IsNullOrEmpty())
+            if (missingIds.IsNullOrEmpty())
             {
                 return cachedMovieTitles;
             }
             else
             {
                 var client = _httpClientFactory.CreateClient("FilmService");
-                var response = await client.GetAsync($"movies/titles?ids={string.Join(",", idsHashset)}");
+                var response = await client.GetAsync($"movies/titles?ids={string.Join(",", missingIds)}");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -230,7 +237,7 @@ namespace ScreeningService.Services
 
                 // set cache
                 var fetchedMovieTitlesDict = fetchedMovieTitles.ToDictionary(m => $"movieTitle-{m.Id}", m => m);
-                await _cacheService.SetMultipleDataAsync(fetchedMovieTitlesDict, DateTimeOffset.Now.AddHours(1));
+                await _cacheService.SetMultipleDataAsync(fetchedMovieTitlesDict, TimeSpan.FromHours(1));
 
                 // combine fetched and cached titles
                 fetchedMovieTitles.AddRange(cachedMovieTitles);
@@ -239,7 +246,7 @@ namespace ScreeningService.Services
             }
         }
 
-        private async Task<List<MovieTitleDTO>> GetCachedMovieTitlesByIdsAsync(int[] ids)
+        private async Task<List<MovieTitleDTO?>> GetCachedMovieTitlesByIdsAsync(int[] ids)
         {
             string[] keys = ids.Select(i => $"movieTitle-{i}").ToArray();
             var cachedMovieTitles = await _cacheService.GetMultipleDataAsync<MovieTitleDTO>(keys);

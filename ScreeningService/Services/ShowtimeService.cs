@@ -196,7 +196,7 @@ namespace ScreeningService.Services
                 }
 
                 // set cache
-                await _cacheService.SetDataAsync($"movieTitleDuration-{id}", content, DateTimeOffset.Now.AddHours(1));
+                await _cacheService.SetDataAsync($"movieTitleDuration-{id}", content, TimeSpan.FromHours(1));
                 
                 return content;
             }

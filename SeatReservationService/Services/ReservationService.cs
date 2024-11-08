@@ -230,7 +230,7 @@ namespace SeatReservationService.Services
                 }
 
                 // set cache
-                await _cacheService.SetDataAsync($"showtime-{id}", content, DateTimeOffset.Now.AddHours(1));
+                await _cacheService.SetDataAsync($"showtime-{id}", content, TimeSpan.FromHours(1));
 
                 return content;
             }
@@ -265,7 +265,7 @@ namespace SeatReservationService.Services
 
                 // set cache
                 var fetchedShowtimesDict = fetchedShowtimes.ToDictionary(s => $"showtime-{s.Id}", s => s);
-                await _cacheService.SetMultipleDataAsync(fetchedShowtimesDict, DateTimeOffset.Now.AddHours(1));
+                await _cacheService.SetMultipleDataAsync(fetchedShowtimesDict, TimeSpan.FromHours(1));
 
                 // combine fetched and cached showtimes
                 fetchedShowtimes.AddRange(cachedShowtimes);

@@ -239,21 +239,28 @@ namespace SeatReservationService.Services
         private async Task<List<ShowtimeDTO>> GetShowtimesByIdsAsync(int[] ids)
         {
             // search for showtimes in cache
-            var cachedShowtimes = await _cacheService.GetMultipleDataAsync<ShowtimeDTO>(ids.Select(id => $"showtime-{id}").ToArray());
+            var cachedShowtimes = await GetCachedShowtimesByIdsAsync(ids);
 
-            var idsHashset = new HashSet<int>(ids);
-            var cachedIdsHashset = new HashSet<int>(cachedShowtimes.Select(showtime => showtime.Id));
-            // missing ids
-            idsHashset.ExceptWith(cachedIdsHashset);
-
-            if (idsHashset.IsNullOrEmpty())
+            // find missing showtime ids and delete nulls from the cachedShowtimes
+            // use the fact that ids and cachedShowtimes have the same order
+            List<int> missingIds = new List<int>();
+            for (int i=cachedShowtimes.Count-1; i >= 0; i--)
             {
-                return cachedShowtimes.ToList();
+                if (cachedShowtimes[i] == null)
+                {
+                    missingIds.Add(ids[i]);
+                    cachedShowtimes.RemoveAt(i);
+                }
+            }
+
+            if (missingIds.IsNullOrEmpty())
+            {
+                return cachedShowtimes;
             }
             else
             {
                 var client = GetClientWithToken("ScreeningService");
-                var response = await client.GetAsync($"showtimes/byids?ids={string.Join(',', idsHashset)}");
+                var response = await client.GetAsync($"showtimes/byids?ids={string.Join(',', missingIds)}");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -272,6 +279,14 @@ namespace SeatReservationService.Services
 
                 return fetchedShowtimes;
             }
+        }
+
+        private async Task<List<ShowtimeDTO?>> GetCachedShowtimesByIdsAsync(int[] ids)
+        {
+            string[] keys = ids.Select(i => $"showtime-{i}").ToArray();
+            var cachedShowtimes = await _cacheService.GetMultipleDataAsync<ShowtimeDTO>(keys);
+
+            return cachedShowtimes.ToList();
         }
 
         private async Task<List<SeatDTO>> GetSeatsByIdsAsync(int[] ids, int sreeningRoomNumber)

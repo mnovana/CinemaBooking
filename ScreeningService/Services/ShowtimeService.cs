@@ -27,7 +27,7 @@ namespace ScreeningService.Services
         public async Task<ShowtimeDTO> AddAsync(Showtime showtime)
         {
             // fetch title and duration from cache or FilmService
-            var movieTitleDurationDto = await GetMovieTitleDuration(showtime.MovieId);
+            var movieTitleDurationDto = await GetMovieTitleDurationAsync(showtime.MovieId);
 
             // calculate end and check overlapping
             showtime.End = showtime.Start.AddMinutes(movieTitleDurationDto.Duration);
@@ -70,7 +70,7 @@ namespace ScreeningService.Services
             var movieIds = showtimes.Select(s => s.MovieId).Distinct().ToArray();
 
             // fetch movie titles from FilmService
-            var movieTitles = await GetMovieTitlesByIds(movieIds);
+            var movieTitles = await GetMovieTitlesByIdsAsync(movieIds);
 
             var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
 
@@ -100,7 +100,7 @@ namespace ScreeningService.Services
                 return null;
             }
 
-            var movieTitles = await GetMovieTitlesByIds( [showtime.MovieId] );
+            var movieTitles = await GetMovieTitlesByIdsAsync( [showtime.MovieId] );
             var showtimeDto = _mapper.Map<ShowtimeDTO>(showtime);
             showtimeDto.MovieTitle = movieTitles.IsNullOrEmpty() ? "unknown" : movieTitles.First().Title;
 
@@ -114,7 +114,7 @@ namespace ScreeningService.Services
             var movieIds = showtimes.Select(s => s.MovieId).Distinct().ToArray();
 
             // fetch movie titles from FilmService
-            var movieTitles = await GetMovieTitlesByIds(movieIds);
+            var movieTitles = await GetMovieTitlesByIdsAsync(movieIds);
 
             var showtimesDto = showtimes.AsQueryable().ProjectTo<ShowtimeDTO>(_mapper.ConfigurationProvider).ToList();
 
@@ -143,7 +143,7 @@ namespace ScreeningService.Services
         public async Task<ShowtimeDTO?> UpdateAsync(Showtime showtime)
         {
             // fetch title and duration from cache or FilmService
-            var movieTitleDurationDto = await GetMovieTitleDuration(showtime.MovieId);
+            var movieTitleDurationDto = await GetMovieTitleDurationAsync(showtime.MovieId);
 
             // calculate end and check overlapping
             showtime.End = showtime.Start.AddMinutes(movieTitleDurationDto.Duration);
@@ -168,7 +168,7 @@ namespace ScreeningService.Services
             return showtimeDto;
         }
 
-        private async Task<MovieTitleDurationDTO> GetMovieTitleDuration(int id)
+        private async Task<MovieTitleDurationDTO> GetMovieTitleDurationAsync(int id)
         {
             // search movie in cache
             var cachedMovieTitleDuration = await _cacheService.GetDataAsync<MovieTitleDurationDTO>($"movieTitleDuration-{id}");
@@ -202,7 +202,7 @@ namespace ScreeningService.Services
             }
         }
 
-        private async Task<List<MovieTitleDTO>> GetMovieTitlesByIds(int[] ids)
+        private async Task<List<MovieTitleDTO>> GetMovieTitlesByIdsAsync(int[] ids)
         {
             // search for titles in cache
             var cachedMovieTitles = await GetCachedMovieTitlesByIdsAsync(ids);

@@ -1,0 +1,30 @@
+﻿@namespace BlazorCinemaBooking.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using BlazorCinemaBooking.Models
+
+<div class="bg-white w-1/3 h-1/2 rounded shadow-md flex flex-col items-center">
+  <h1 class="text-3xl py-3">Login</h1>
+
+  <EditForm Enhanced="true" Model="login" FormName="login" OnValidSubmit="Submit" class="flex-1 w-4/5">
+      <DataAnnotationsValidator />
+      <div class="flex flex-col justify-around items-center h-full">
+            <InputText @bind-Value="login.Email" placeholder="Email" class="w-full border p-2" />
+            <ValidationMessage For="() => login.Email" />
+
+            <InputText @bind-Value="login.Password" type="password" placeholder="Password" class="w-full border p-2" />
+            <ValidationMessage For="() => login.Password" />
+
+            <button type="submit" class="w-3/4 h-8 text-white font-bold bg-gradient-to-r from-sky-400 to-pink-500 rounded">LOGIN</button>
+      </div>
+  </EditForm>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Login login { get; set; } = new Login();
+
+    public void Submit()
+    {
+        
+    }
+}

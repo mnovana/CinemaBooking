@@ -40,9 +40,9 @@ namespace FilmService
             builder.Services.AddSwaggerGen();
 
             // Authentication
-            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-            var audiences = Environment.GetEnvironmentVariable("JWT_AUDIENCE").Split(',');
-            var key = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
+            var issuer = builder.Configuration["JWT_ISSUER"];
+            var audiences = builder.Configuration["JWT_AUDIENCE"].Split(',');
+            var key = builder.Configuration["JWT_SIGNING_KEY"];
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

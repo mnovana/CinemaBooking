@@ -14,13 +14,15 @@ namespace FilmService.Services
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
         private readonly ICacheService _cacheService;
+        private readonly IConfiguration _configuration;
 
-        public MovieService(IMovieRepository movieRepository, IMapper mapper, HttpClient httpClient, ICacheService cacheService)
+        public MovieService(IMovieRepository movieRepository, IMapper mapper, HttpClient httpClient, ICacheService cacheService, IConfiguration configuration)
         {
             _movieRepository = movieRepository;
             _mapper = mapper;
             _httpClient = httpClient;
             _cacheService = cacheService;
+            _configuration = configuration;
         }
         
         public async Task<MovieDTO> AddAsync(Movie movie)
@@ -79,7 +81,7 @@ namespace FilmService.Services
 
         private async Task<bool> ShowtimeWithMovieExistsAsync(int movieId)
         {
-            _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SCREENING_SERVICE_URL"));
+            _httpClient.BaseAddress = new Uri(_configuration["SCREENING_SERVICE_URL"]);
             var response = await _httpClient.GetAsync($"showtimes/movie/{movieId}");
 
             if (response.IsSuccessStatusCode)

@@ -40,9 +40,9 @@ namespace ScreeningService
             builder.Services.AddSwaggerGen();
 
             // Authentication
-            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-            var audiences = Environment.GetEnvironmentVariable("JWT_AUDIENCE").Split(',');
-            var key = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
+            var issuer = builder.Configuration["JWT_ISSUER"];
+            var audiences = builder.Configuration["JWT_AUDIENCE"].Split(',');
+            var key = builder.Configuration["JWT_SIGNING_KEY"];
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -87,12 +87,12 @@ namespace ScreeningService
             // Http clients
             builder.Services.AddHttpClient("FilmService", client =>
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("FILM_SERVICE_URL"));
+                client.BaseAddress = new Uri(builder.Configuration["FILM_SERVICE_URL"]);
             });
 
             builder.Services.AddHttpClient("SeatReservationService", client =>
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SEATRESERVATION_SERVICE_URL"));
+                client.BaseAddress = new Uri(builder.Configuration["SEATRESERVATION_SERVICE_URL"]);
             });
 
             var app = builder.Build();

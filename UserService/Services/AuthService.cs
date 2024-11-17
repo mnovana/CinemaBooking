@@ -14,12 +14,14 @@ namespace UserService.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<AuthService> _logger;
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<AppUser> userManager, ILogger<AuthService> logger, AppDbContext context)
+        public AuthService(UserManager<AppUser> userManager, ILogger<AuthService> logger, AppDbContext context, IConfiguration configuration)
         {
             _userManager = userManager;
             _logger = logger;
             _context = context;
+            _configuration = configuration;
         }
 
         public async Task<TokenDTO?> LoginAsync(LoginDTO model)
@@ -61,9 +63,9 @@ namespace UserService.Services
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var key = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
-            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+            var key = _configuration["JWT_SIGNING_KEY"];
+            var issuer = _configuration["JWT_ISSUER"];
+            var audience = _configuration["JWT_AUDIENCE"];
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 

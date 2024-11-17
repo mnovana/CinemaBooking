@@ -41,9 +41,9 @@ namespace SeatReservationService
             builder.Services.AddSwaggerGen();
 
             // Authentication
-            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-            var audiences = Environment.GetEnvironmentVariable("JWT_AUDIENCE").Split(',');
-            var key = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
+            var issuer = builder.Configuration["JWT_ISSUER"];
+            var audiences = builder.Configuration["JWT_AUDIENCE"].Split(',');
+            var key = builder.Configuration["JWT_SIGNING_KEY"];
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -86,12 +86,12 @@ namespace SeatReservationService
             // Http clients
             builder.Services.AddHttpClient("ScreeningService", client =>
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SCREENING_SERVICE_URL"));
+                client.BaseAddress = new Uri(builder.Configuration["SCREENING_SERVICE_URL"]);
             });
 
             builder.Services.AddHttpClient("UserService", client =>
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("USER_SERVICE_URL"));
+                client.BaseAddress = new Uri(builder.Configuration["USER_SERVICE_URL"]);
             });
 
             // Http context accessor

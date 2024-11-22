@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using UserService.Models.DTO;
+using SharedLibrary.Models.DTO;
 
 namespace UserService.Services
 {

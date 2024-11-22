@@ -1,4 +1,4 @@
-﻿namespace UserService.Models.DTO
+﻿namespace SharedLibrary.Models.DTO
 {
     public class TokenDTO
     {

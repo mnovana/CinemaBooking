@@ -1,6 +1,7 @@
 using BlazorCinemaBooking.Components;
 using BlazorCinemaBooking.Services;
 using BlazorCinemaBooking.Services.Interfaces;
+using Blazored.LocalStorage;
 
 namespace BlazorCinemaBooking
 {
@@ -11,12 +12,15 @@ namespace BlazorCinemaBooking
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorComponents();
+            builder.Services.AddRazorComponents()
                             .AddInteractiveServerComponents();
             builder.Services.AddHttpClient<ShowtimeService>(client => client.BaseAddress = new Uri("https://localhost:5002/gateway/showtimes"));
             builder.Services.AddHttpClient<MovieService>(client => client.BaseAddress = new Uri("https://localhost:5002/gateway/movies"));
+            builder.Services.AddHttpClient<UserService>(client => client.BaseAddress = new Uri("https://localhost:5002/gateway/users"));
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
             builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddBlazoredLocalStorage();
 
             var app = builder.Build();
 

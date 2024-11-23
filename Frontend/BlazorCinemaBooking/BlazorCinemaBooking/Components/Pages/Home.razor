@@ -1,8 +1,63 @@
-﻿@page "/"
+﻿@page "/{date:datetime?}"
+@inject IShowtimeService ShowtimeService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>CinemaBooking</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="h-full flex justify-center items-center">
+  <div class="bg-white h-4/5 w-3/4 rounded shadow-md flex flex-col gap-7 items-center">
+    <h1 class="text-3xl py-3">Showtimes</h1>
+    
+    @if(showtimes == null || dates == null)
+    {  
+        <div class="flex-1 flex justify-center items-center">
+            <span class="text-2xl text-zinc-900">@centerText</span>
+        </div>
+    }
+    else
+    {
+        <Dates Dates=@dates />
+        
+        <Showtimes Showtimes=@(showtimes.Where(s => s.Start.Date == date).ToList()) />
+    }
 
+  </div>
+</div>
 
-<span class="text-8xl underline">Welcome to your new app.</span>
+@code {
+    [Parameter]
+    public DateTime? date { get; set; }
+    private List<DateTime>? dates;
+    private List<ShowtimeDTO>? showtimes;
+    private string centerText = "Loading...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            showtimes = await ShowtimeService.GetShowtimesAsync();
+
+            if(showtimes.Count == 0)
+            {
+                centerText = "There are no showtimes.";
+            } else
+            {
+                dates = showtimes
+                    .GroupBy(s => s.Start.Date)
+                    .Select(group => group.Key)
+                    .ToList();
+            }
+        }
+        catch(Exception ex)
+        {
+            centerText = ex.Message;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (dates != null)
+        {
+            date ??= dates[0];
+        }
+    }
+}

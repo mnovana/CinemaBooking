@@ -1,0 +1,21 @@
+﻿@namespace BlazorCinemaBooking.Components.Elements
+@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
+
+<div class="flex justify-start gap-3 w-full px-10">
+    @foreach (var date in dates)
+    {
+        <NavLink 
+            href=@($"/{date.ToString("yyyy-MM-dd")}")
+                 Match="NavLinkMatch.All"
+            class="w-fit px-3 py-2 text-xl text-center hover:bg-stone-100 border rounded"
+            activeClass="bg-stone-100">
+            @date.Date.ToString("dd.MM.yyyy.")
+        </NavLink>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<DateTime> dates { get; set; }
+}

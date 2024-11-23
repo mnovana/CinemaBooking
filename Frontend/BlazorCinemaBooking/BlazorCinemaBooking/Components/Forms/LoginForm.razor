@@ -5,14 +5,14 @@
 <div class="bg-white w-1/3 h-1/2 rounded shadow-md flex flex-col items-center">
   <h1 class="text-3xl py-3">Login</h1>
 
-  <EditForm Enhanced="true" Model="login" FormName="login" OnValidSubmit="Submit" class="flex-1 w-4/5">
+    <EditForm Enhanced="true" Model="model" FormName="login" OnValidSubmit="Submit" class="flex-1 w-4/5">
       <DataAnnotationsValidator />
       <div class="flex flex-col justify-around items-center h-full">
-            <InputText @bind-Value="login.Email" placeholder="Email" class="w-full border p-2" />
-            <ValidationMessage For="() => login.Email" />
+            <InputText @bind-Value="model.Username" placeholder="Username" class="w-full border p-2" />
+            <ValidationMessage For="() => model.Username" />
 
-            <InputText @bind-Value="login.Password" type="password" placeholder="Password" class="w-full border p-2" />
-            <ValidationMessage For="() => login.Password" />
+            <InputText @bind-Value="model.Password" type="password" placeholder="Password" class="w-full border p-2" />
+            <ValidationMessage For="() => model.Password" />
 
             <button type="submit" class="w-3/4 h-8 text-white font-bold bg-gradient-to-r from-blue-900 via-fuchsia-700 to-pink-700 hover:opacity-80 rounded">LOGIN</button>
       </div>
@@ -21,7 +21,7 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Login login { get; set; } = new Login();
+    private Login model { get; set; } = new Login();
 
     public void Submit()
     {

@@ -1,6 +1,5 @@
 ﻿using BlazorCinemaBooking.Models;
 using BlazorCinemaBooking.Services.Interfaces;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Mvc;
 using SharedLibrary.Models.DTO;
 
@@ -9,12 +8,12 @@ namespace BlazorCinemaBooking.Services
     public class UserService : IUserService
     {
         private readonly HttpClient _httpClient;
-        private readonly ILocalStorageService _localStorageService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(HttpClient httpClient, ILocalStorageService localStorageService)
+        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
-            _localStorageService = localStorageService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task LoginAsync(Login model)
@@ -29,7 +28,15 @@ namespace BlazorCinemaBooking.Services
 
             var token = await response.Content.ReadFromJsonAsync<TokenDTO>() ?? throw new Exception("Failed to read the token");
 
-            await _localStorageService.SetItemAsync("jwt", token.Token);
+            var options = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(2)
+            };
+
+            _httpContextAccessor.HttpContext?.Response.Cookies.Append("jwt_token", token.Token, options);
         }
 
     }

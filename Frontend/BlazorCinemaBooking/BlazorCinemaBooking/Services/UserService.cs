@@ -1,5 +1,6 @@
 ﻿using BlazorCinemaBooking.Models;
 using BlazorCinemaBooking.Services.Interfaces;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using SharedLibrary.Models.DTO;
 
@@ -37,6 +38,11 @@ namespace BlazorCinemaBooking.Services
             };
 
             _httpContextAccessor.HttpContext?.Response.Cookies.Append("jwt_token", token.Token, options);
+        }
+
+        public void Logout()
+        {
+            _httpContextAccessor.HttpContext?.Response.Cookies.Delete("jwt_token");
         }
 
     }

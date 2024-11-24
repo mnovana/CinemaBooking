@@ -6,5 +6,6 @@ namespace BlazorCinemaBooking.Services.Interfaces
     public interface IUserService
     {
         Task LoginAsync(Login model);
+        void Logout();
     }
 }

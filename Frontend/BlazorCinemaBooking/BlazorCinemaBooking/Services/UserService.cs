@@ -1,6 +1,6 @@
 ﻿using BlazorCinemaBooking.Models;
 using BlazorCinemaBooking.Services.Interfaces;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Mvc;
 using SharedLibrary.Models.DTO;
 
@@ -9,12 +9,12 @@ namespace BlazorCinemaBooking.Services
     public class UserService : IUserService
     {
         private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILocalStorageService _localStorageService;
 
-        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public UserService(HttpClient httpClient, ILocalStorageService localStorageService)
         {
             _httpClient = httpClient;
-            _httpContextAccessor = httpContextAccessor;
+            _localStorageService = localStorageService;
         }
 
         public async Task LoginAsync(Login model)
@@ -29,20 +29,12 @@ namespace BlazorCinemaBooking.Services
 
             var token = await response.Content.ReadFromJsonAsync<TokenDTO>() ?? throw new Exception("Failed to read the token");
 
-            var options = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(2)
-            };
-
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append("jwt_token", token.Token, options);
+            await _localStorageService.SetItemAsync("jwt_token", token.Token);
         }
 
-        public void Logout()
+        public async Task LogoutAsync()
         {
-            _httpContextAccessor.HttpContext?.Response.Cookies.Delete("jwt_token");
+            await _localStorageService.RemoveItemAsync("jwt_token");
         }
 
     }

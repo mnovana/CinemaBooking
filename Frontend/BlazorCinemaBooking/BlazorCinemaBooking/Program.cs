@@ -1,6 +1,7 @@
 using BlazorCinemaBooking.Components;
 using BlazorCinemaBooking.Services;
 using BlazorCinemaBooking.Services.Interfaces;
+using Blazored.LocalStorage;
 
 namespace BlazorCinemaBooking
 {
@@ -19,7 +20,7 @@ namespace BlazorCinemaBooking
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddBlazoredLocalStorage();
 
             var app = builder.Build();
 

@@ -2,6 +2,11 @@ using BlazorCinemaBooking.Components;
 using BlazorCinemaBooking.Services;
 using BlazorCinemaBooking.Services.Interfaces;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using SharedLibrary.Config;
+using System.Text;
 
 namespace BlazorCinemaBooking
 {
@@ -9,6 +14,8 @@ namespace BlazorCinemaBooking
     {
         public static void Main(string[] args)
         {
+            EnvSetup.EnsureEnvFileExists();
+            
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -21,6 +28,27 @@ namespace BlazorCinemaBooking
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddBlazoredLocalStorage();
+
+            // Authentication
+            builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
+
+            var issuer = builder.Configuration["JWT_ISSUER"];
+            var audiences = builder.Configuration["JWT_AUDIENCE"].Split(',');
+            var key = builder.Configuration["JWT_SIGNING_KEY"];
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = issuer,
+                        ValidAudiences = audiences,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    };
+                });
 
             var app = builder.Build();
 
@@ -36,6 +64,8 @@ namespace BlazorCinemaBooking
 
             app.UseStaticFiles();
             app.UseAntiforgery();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorComponents<App>()
                .AddInteractiveServerRenderMode();

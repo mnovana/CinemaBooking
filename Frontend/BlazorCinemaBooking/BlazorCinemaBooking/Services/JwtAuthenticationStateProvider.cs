@@ -10,7 +10,7 @@ namespace BlazorCinemaBooking.Services
     {
         private readonly ILocalStorageService _localStorageService;
 
-        private JwtAuthenticationStateProvider(ILocalStorageService localStorageService)
+        public JwtAuthenticationStateProvider(ILocalStorageService localStorageService)
         {
             _localStorageService = localStorageService;
         }

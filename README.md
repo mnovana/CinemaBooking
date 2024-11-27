@@ -2,7 +2,7 @@
 
 ### Description
 
-**CinemaBooking** is an application for movie tickets reservation split into multiple microservices with each keeping its own database. Communication between microservices is, for now, done only synchronously through their REST API endpoints. User access is role-based with "user" and "admin" roles. Ocelot API Gateway provides a single entry point for clients, featuring caching and authentication. Distributed caching with Redis is implemented in service-to-service communication.
+**CinemaBooking** is an application for movie tickets reservation split into multiple microservices with each keeping its own database. Communication between microservices is, for now, done only synchronously through their REST API endpoints. User access is role-based with "user" and "admin" roles. Ocelot API Gateway provides a single entry point for clients, featuring caching and authentication. Distributed caching with Redis is implemented in service-to-service communication. Blazor is used to create a simple front-end.
 
 ### Technologies
 
@@ -16,7 +16,7 @@
 
 ### Features in progress
 
-- A Blazor front-end with login and reservation functionalities
+- Reservation functionalities in Blazor
 
 ### Users
 

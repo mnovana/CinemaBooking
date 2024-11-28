@@ -32,7 +32,18 @@ namespace SharedLibrary.Services
             var redisKeys = keys.Select(key => new RedisKey(key)).ToArray();
             var redisValues = await db.StringGetAsync(redisKeys);
 
-            var values = redisValues.Select(redisValue => JsonSerializer.Deserialize<T>(redisValue));
+            var values = redisValues
+                .Select(redisValue =>
+                {
+                    if(redisValue.IsNullOrEmpty)
+                    {
+                        return default;
+                    }
+                    else
+                    {
+                        return JsonSerializer.Deserialize<T>(redisValue);
+                    }
+                });
 
             return values;
         }

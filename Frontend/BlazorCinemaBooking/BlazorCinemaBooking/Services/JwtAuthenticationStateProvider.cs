@@ -25,7 +25,7 @@ namespace BlazorCinemaBooking.Services
             }
 
             var claims = ParseClaimsFromJwt(token);
-            var identity = new ClaimsIdentity(claims);
+            var identity = new ClaimsIdentity(claims, "Bearer");
             var user = new ClaimsPrincipal(identity);
 
             return new AuthenticationState(user);

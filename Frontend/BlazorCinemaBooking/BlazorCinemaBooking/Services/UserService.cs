@@ -14,17 +14,17 @@ namespace BlazorCinemaBooking.Services
         public UserService(HttpClient httpClient, ILocalStorageService localStorageService)
         {
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:5002");
             _localStorageService = localStorageService;
         }
 
         public async Task LoginAsync(Login model)
         {
-            var response = await _httpClient.PostAsJsonAsync("", model);
+            var response = await _httpClient.PostAsJsonAsync("gateway/users/login", model);
 
             if (!response.IsSuccessStatusCode)
             {
-                var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-                throw new Exception(problem == null ? "Failed login" : problem.Title);
+                throw new Exception($"Failed login: {response.StatusCode}");
             }
 
             var token = await response.Content.ReadFromJsonAsync<TokenDTO>() ?? throw new Exception("Failed to read the token");

@@ -1,11 +1,38 @@
 ﻿@page "/login"
+@rendermode RenderMode.InteractiveServer
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
 
 <PageTitle>Login</PageTitle>
 
 <div class="h-full flex justify-center items-center">
-    <LoginForm />
+    @if(isLoggedIn == null)
+    {
+        <span class="text-2xl">Loading...</span>
+    }
+    else
+    {
+        <LoginForm />
+    }
 </div>
 
 @code {
+    private bool? isLoggedIn;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            if (authState.User.Identity == null || !authState.User.Identity.IsAuthenticated)
+            {
+                isLoggedIn = false;
+                StateHasChanged();
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        } 
+    }
 }

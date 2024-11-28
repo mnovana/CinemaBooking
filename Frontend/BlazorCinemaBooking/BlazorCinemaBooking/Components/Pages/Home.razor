@@ -1,9 +1,23 @@
 ﻿@page "/{date:datetime?}"
+@rendermode RenderMode.InteractiveServer
 @inject IShowtimeService ShowtimeService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IUserService UserService
 
 <PageTitle>CinemaBooking</PageTitle>
 
-<div class="h-full flex justify-center items-center">
+<div class="h-full flex flex-col justify-center items-center">
+    <div class="w-3/4  text-right text-white">
+        @if (isLoggedIn)
+        {
+            <span>@username | <button class="hover:font-bold" @onclick="LogoutAsync">LOGOUT</button></span>
+        }
+        else
+        {
+            <a href="/login" class="hover:font-bold">LOGIN</a>
+        }
+  </div>
+
   <div class="bg-white h-4/5 w-3/4 rounded shadow-md flex flex-col gap-7 items-center">
     <h1 class="text-3xl py-3">Showtimes</h1>
     
@@ -29,6 +43,8 @@
     private List<DateTime>? dates;
     private List<ShowtimeDTO>? showtimes;
     private string centerText = "Loading...";
+    private string? username;
+    private bool isLoggedIn;
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,6 +61,8 @@
                     .GroupBy(s => s.Start.Date)
                     .Select(group => group.Key)
                     .ToList();
+
+                date ??= dates[0];
             }
         }
         catch(Exception ex)
@@ -53,11 +71,23 @@
         }
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (dates != null)
+        if(firstRender)
         {
-            date ??= dates[0];
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            username = authState.User.Identity?.Name;
+            isLoggedIn = authState.User.Identity?.IsAuthenticated ?? false;
+
+            StateHasChanged();
         }
+    }
+
+    private async Task LogoutAsync()
+    {
+        await UserService.LogoutAsync();
+        username = null;
+        isLoggedIn = false;
+        StateHasChanged();
     }
 }

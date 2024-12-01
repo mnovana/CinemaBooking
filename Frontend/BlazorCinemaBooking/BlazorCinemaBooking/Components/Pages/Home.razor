@@ -6,7 +6,7 @@
 
 <PageTitle>CinemaBooking</PageTitle>
 
-<div class="h-full flex flex-col justify-center items-center">
+<div class="min-h-screen flex flex-col justify-center items-center">
     <div class="w-3/4  text-right text-white">
         @if (isLoggedIn)
         {
@@ -18,7 +18,7 @@
         }
   </div>
 
-  <div class="bg-white h-4/5 w-3/4 rounded shadow-md flex flex-col gap-7 items-center">
+  <div class="bg-white min-h-4/5 w-3/4 rounded shadow-md flex flex-col gap-7 items-center">
     <h1 class="text-3xl py-3">Showtimes</h1>
     
     @if(showtimes == null || dates == null)

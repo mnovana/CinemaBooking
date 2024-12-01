@@ -10,6 +10,7 @@ namespace BlazorCinemaBooking.Services
         public MovieService(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:5002");
         }
 
         public async Task<MovieDTO> GetMovieById(int id)

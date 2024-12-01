@@ -21,8 +21,8 @@ namespace BlazorCinemaBooking
             // Add services to the container.
             builder.Services.AddRazorComponents()
                             .AddInteractiveServerComponents();
-            builder.Services.AddHttpClient<ShowtimeService>(client => client.BaseAddress = new Uri("https://localhost:5002/gateway/showtimes"));
-            builder.Services.AddHttpClient<MovieService>(client => client.BaseAddress = new Uri("https://localhost:5002/gateway/movies"));
+            builder.Services.AddHttpClient<ShowtimeService>();
+            builder.Services.AddHttpClient<MovieService>();
             builder.Services.AddHttpClient<UserService>();
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
             builder.Services.AddScoped<IMovieService, MovieService>();

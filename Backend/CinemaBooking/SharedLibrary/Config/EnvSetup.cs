@@ -9,7 +9,7 @@ namespace SharedLibrary.Config
 {
     public class EnvSetup
     {
-        private static readonly string envFilePath = Path.GetFullPath("../../.env");
+        private static readonly string envFilePath = Path.GetFullPath("../../../.env");
 
         public static void EnsureEnvFileExists()
         {

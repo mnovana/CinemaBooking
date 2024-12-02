@@ -33,7 +33,9 @@ namespace SeatReservationService
                     options.UseSqlServer(connectionString));
 
             // Redis
-            builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")));
+            var redisOptions = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
+            redisOptions.AbortOnConnectFail = false;
+            builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOptions));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

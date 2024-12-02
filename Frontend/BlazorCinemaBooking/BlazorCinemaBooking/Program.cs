@@ -2,6 +2,7 @@ using BlazorCinemaBooking.Components;
 using BlazorCinemaBooking.Services;
 using BlazorCinemaBooking.Services.Interfaces;
 using Blazored.LocalStorage;
+using Blazored.Toast;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,9 @@ namespace BlazorCinemaBooking
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddBlazoredLocalStorage();
+
+            // Toast notifications
+            builder.Services.AddBlazoredToast();
 
             // Authentication
             builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();

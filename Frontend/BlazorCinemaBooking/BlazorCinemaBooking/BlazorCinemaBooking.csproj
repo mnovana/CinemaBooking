@@ -8,12 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="SharedLibrary">
-      <HintPath>..\..\..\Backend\SharedLibrary\bin\Debug\net8.0\SharedLibrary.dll</HintPath>
+      <HintPath>..\..\..\Backend\CinemaBooking\SharedLibrary\bin\Debug\net8.0\SharedLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
   

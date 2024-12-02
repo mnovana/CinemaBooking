@@ -32,7 +32,7 @@
     {
         <Dates Dates=@dates />
         
-        <Showtimes Showtimes=@(showtimes.Where(s => s.Start.Date == date).ToList()) />
+        <Showtimes Showtimes=@(showtimes.Where(s => s.Start.Date == date).ToList()) IsLoggedIn=@isLoggedIn />
     }
 
   </div>
@@ -70,6 +70,11 @@
         {
             centerText = ex.Message;
         }
+    }
+
+    protected override void OnParametersSet()
+    {
+        date ??= dates[0];
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

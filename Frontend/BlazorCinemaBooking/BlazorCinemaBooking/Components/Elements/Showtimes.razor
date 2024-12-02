@@ -1,4 +1,7 @@
 ﻿@namespace BlazorCinemaBooking.Components.Elements
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ISeatReservationService SeatReservationService
+@inject IToastService ToastService
 
 @if (moviesWithShowtimes != null)
 {
@@ -17,10 +20,11 @@
                     @foreach(var showtime in movie.Value)
                     {
                         <div class="m-2 p-2 rounded border flex justify-between">
-                            <span>
+                            <div>
                                 @showtime.Start.ToString("HH:mm")
-                            </span>
-                            <button class="px-3 bg-zinc-700 hover:bg-zinc-800 text-white rounded-xl">
+                            </div>
+                            <button @onclick="async() => await ReserveClickAsync(showtime.Id)"
+                                    class="px-3 bg-zinc-700 hover:bg-zinc-800 text-white rounded-xl">
                                 RESERVE
                             </button>
                         </div>
@@ -37,6 +41,8 @@
 @code {
     [Parameter]
     public List<ShowtimeDTO> showtimes { get; set; }
+    [Parameter]
+    public bool isLoggedIn { get; set; }
     private Dictionary<int, ShowtimeDTO[]>? moviesWithShowtimes;
 
     protected override void OnParametersSet()
@@ -44,5 +50,30 @@
         moviesWithShowtimes = showtimes
             .GroupBy(s => s.MovieId)
             .ToDictionary(group => group.Key, group => group.ToArray());
+    }
+
+    private async Task ReserveClickAsync(int showtimeId)
+    {
+        if(!isLoggedIn)
+        {
+            ToastService.ShowError("You are not logged in.");
+            Console.WriteLine("Toasttttttttttttt");
+        }
+        else
+        {
+            try
+            {
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                var email = authState.User.FindFirst("email")?.Value;
+
+                await SeatReservationService.AddReservationAsync(showtimeId, email, new[] { 8, 9 });
+
+                ToastService.ShowSuccess("Successful reservation.");
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowError(ex.Message);
+            }
+        }
     }
 }

@@ -22,12 +22,20 @@ namespace BlazorCinemaBooking
             // Add services to the container.
             builder.Services.AddRazorComponents()
                             .AddInteractiveServerComponents();
+
+            // Http clients
             builder.Services.AddHttpClient<ShowtimeService>();
             builder.Services.AddHttpClient<MovieService>();
+            builder.Services.AddHttpClient<SeatReservationService>();
             builder.Services.AddHttpClient<UserService>();
+
+            // Services
             builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
             builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddScoped<ISeatReservationService, SeatReservationService>();
             builder.Services.AddScoped<IUserService, UserService>();
+
+            // Local storage
             builder.Services.AddBlazoredLocalStorage();
 
             // Toast notifications

@@ -97,6 +97,9 @@ namespace ScreeningService
                 client.BaseAddress = new Uri(builder.Configuration["SEATRESERVATION_SERVICE_URL"]);
             });
 
+            // Http context accessor
+            builder.Services.AddHttpContextAccessor();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

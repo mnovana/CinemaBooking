@@ -6,6 +6,7 @@ using SharedLibrary.Models.DTO;
 using ScreeningService.Repositories.Interfaces;
 using ScreeningService.Services.Interfaces;
 using SharedLibrary.Services.Interfaces;
+using System.Net.Http.Headers;
 
 namespace ScreeningService.Services
 {
@@ -15,13 +16,15 @@ namespace ScreeningService.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
         private readonly ICacheService _cacheService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ShowtimeService(IShowtimeRepository showtimeRepository, IHttpClientFactory httpClientFactory, IMapper mapper, ICacheService cacheService)
+        public ShowtimeService(IShowtimeRepository showtimeRepository, IHttpClientFactory httpClientFactory, IMapper mapper, ICacheService cacheService, IHttpContextAccessor httpContextAccessor )
         {
             _showtimeRepository = showtimeRepository;
             _mapper = mapper;
             _httpClientFactory = httpClientFactory;
             _cacheService = cacheService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ShowtimeDTO> AddAsync(Showtime showtime)
@@ -256,7 +259,12 @@ namespace ScreeningService.Services
 
         private async Task<bool> ReservationWithShowtimeExistsAsync(int showtimeId)
         {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers.Authorization
+                .ToString()
+                .Replace("Bearer ", "");
+
             var client = _httpClientFactory.CreateClient("SeatReservationService");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await client.GetAsync($"reservations/showtime/{showtimeId}");
 
             if (response.IsSuccessStatusCode)

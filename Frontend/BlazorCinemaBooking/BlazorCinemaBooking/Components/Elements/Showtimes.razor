@@ -64,7 +64,7 @@
             try
             {
                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-                var email = authState.User.FindFirst("email")?.Value;
+                var email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("emailaddress"))?.Value;
 
                 await SeatReservationService.AddReservationAsync(showtimeId, email, new[] { 8, 9 });
 

@@ -23,6 +23,7 @@ namespace BlazorCinemaBooking.Services
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = await _localStorageService.GetItemAsStringAsync("jwt_token");
+            token = token?.Trim('"');
 
             if (string.IsNullOrEmpty(token) || !TokenIsValid(token))
             {

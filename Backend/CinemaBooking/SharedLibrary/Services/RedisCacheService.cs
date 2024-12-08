@@ -1,4 +1,5 @@
-﻿using SharedLibrary.Services.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using SharedLibrary.Services.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -6,17 +7,28 @@ namespace SharedLibrary.Services
 {
     public class RedisCacheService : ICacheService
     {
-        public readonly IConnectionMultiplexer _connectionMultiplexer;
+        private readonly IConnectionMultiplexer _connectionMultiplexer;
+        private readonly ILogger<RedisCacheService> _logger;
 
-        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer)
+        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer, ILogger<RedisCacheService> logger)
         {
             _connectionMultiplexer = connectionMultiplexer;
+            _logger = logger;
         }
         
         public async Task<T?> GetDataAsync<T>(string key)
         {
             var db = _connectionMultiplexer.GetDatabase();
-            var value = await db.StringGetAsync(key);
+            RedisValue? value;
+            try
+            {
+                value = await db.StringGetAsync(key);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Redis failed to get data: {msg}", ex.Message);
+                value = null;
+            }
 
             if(!string.IsNullOrEmpty(value))
             {
@@ -30,7 +42,18 @@ namespace SharedLibrary.Services
         {
             var db = _connectionMultiplexer.GetDatabase();
             var redisKeys = keys.Select(key => new RedisKey(key)).ToArray();
-            var redisValues = await db.StringGetAsync(redisKeys);
+            RedisValue[]? redisValues = null;
+
+            try
+            {
+                redisValues = await db.StringGetAsync(redisKeys);
+            }
+
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Redis failed to get multiple data: {msg}", ex.Message);
+                return keys.Select(k => default(T?));   // return a list of nulls
+            }
 
             var values = redisValues
                 .Select(redisValue =>
@@ -57,16 +80,31 @@ namespace SharedLibrary.Services
         public async Task SetDataAsync<T>(string key, T value, TimeSpan expirationTime)
         {
             var db = _connectionMultiplexer.GetDatabase();
-            await db.StringSetAsync(key, JsonSerializer.Serialize(value), expirationTime);
+
+            try
+            {
+                await db.StringSetAsync(key, JsonSerializer.Serialize(value), expirationTime);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Redis failed to set data: {msg}", ex.Message);
+            }
         }
 
         public async Task SetMultipleDataAsync<T>(Dictionary<string, T> entries, TimeSpan expirationTime)
         {
             var db = _connectionMultiplexer.GetDatabase();
 
-            var tasks = entries.Select(entry => db.StringSetAsync(entry.Key, JsonSerializer.Serialize(entry.Value), expirationTime));
+            try
+            {
+                var tasks = entries.Select(entry => db.StringSetAsync(entry.Key, JsonSerializer.Serialize(entry.Value), expirationTime));
 
-            await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Redis failed to set multiple data: {msg}", ex.Message);
+            }
         }
     }
 }
